@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-05-06T00:00:00Z",
+  "generator": {
+    "name": "foundry_poc_generator.py",
+    "version": "1.0.0"
+  },
+  "inputs": {
+    "lead_db": "<skill-dir>/examples/lead_database.example.json",
+    "lead_id": "L-0001",
+    "onchain": null,
+    "code_index": "<skill-dir>/examples/code_index.vault_inflation.example.json"
+  },
+  "project": {
+    "root": "<target-repo>",
+    "branch": null,
+    "commit": null
+  },
+  "lead": {
+    "id": "L-0001",
+    "title": "First depositor donation inflation in Vault.deposit",
+    "bug_class": "erc4626-inflation",
+    "status": "PROVE",
+    "impact_type": "stolen-funds",
+    "exploit_sentence": "Because the first depositor can mint dust shares and donate assets before a victim deposit, the attacker can inflate share price so the victim receives zero shares and then redeem the victim's assets."
+  },
+  "target": {
+    "mode": "local",
+    "chain_id": null,
+    "block_number": null,
+    "rpc_env": "RPC_URL",
+    "address": null,
+    "implementation": null,
+    "asset": null,
+    "contract": "Vault",
+    "function": "deposit"
+  },
+  "pattern": {
+    "id": "erc4626-inflation",
+    "title": "ERC4626 first-depositor donation inflation",
+    "test_name": "test_exploit_attackerStealsVictimDepositViaDonationInflation",
+    "steps": [
+      "Start from an empty or near-empty vault state.",
+      "Attacker deposits dust shares.",
+      "Attacker donates underlying directly to inflate share price.",
+      "Victim performs a normal deposit and receives zero/fewer shares.",
+      "Attacker redeems shares and extracts victim value."
+    ],
+    "assertions": [
+      "assertLt(victimShares, expectedFairShares, 'victim shares were not diluted');",
+      "assertGt(attackerGain, attackerCost, 'attack not profitable');",
+      "assertEq(attackerGain, victimLoss, 'attacker gain must equal victim loss');"
+    ],
+    "control": "Apply donation/min-share/virtual-offset protection or execute honest deposit order and assert victim receives fair shares.",
+    "harnesses": []
+  },
+  "output": {
+    "solidity_path": "<skill-dir>/examples/L0001VaultInflationPoC.example.t.sol",
+    "metadata_path": "<skill-dir>/examples/foundry_poc_plan.example.json",
+    "test_contract": "L0001Erc4626InflationPoC",
+    "poc_status": "SCAFFOLD",
+    "intentionally_fails_until_completed": true
+  },
+  "run": {
+    "narrow_command": "forge test --match-path test/L0001VaultInflationPoC.t.sol --match-test test_exploit_attackerStealsVictimDepositViaDonationInflation -vvvv",
+    "after_completion_command": "forge test --match-path test/L0001VaultInflationPoC.t.sol --match-test test_exploit_attackerStealsVictimDepositViaDonationInflation -vvvv",
+    "lead_db_command_after_generation": "python3 <skill-dir>/scripts/lead_db.py add-poc audit-leads.json L-0001 --path test/L0001VaultInflationPoC.t.sol --command \"forge test --match-path test/L0001VaultInflationPoC.t.sol --match-test test_exploit_attackerStealsVictimDepositViaDonationInflation -vvvv\" --status PLANNED --summary \"generated scaffold; exploit assertions still TODO\"",
+    "lead_db_command_after_pass": "python3 <skill-dir>/scripts/lead_db.py add-poc audit-leads.json L-0001 --path test/L0001VaultInflationPoC.t.sol --command \"forge test --match-path test/L0001VaultInflationPoC.t.sol --match-test test_exploit_attackerStealsVictimDepositViaDonationInflation -vvvv\" --status PASS --summary \"PoC passes and asserts concrete impact\""
+  },
+  "todo": [
+    "Replace placeholder low-level calls with typed target interface calls.",
+    "Set exact victim/protocol baseline balances and accounting state.",
+    "Implement exploit sequence using normal attacker privileges only.",
+    "Assert both attacker gain and victim/protocol loss, bad debt, frozen funds, or unauthorized state change.",
+    "Implement control test proving honest path or patched behavior blocks exploit.",
+    "Run the narrow forge command and only then update Lead DB PoC status to PASS."
+  ],
+  "safety": {
+    "modifies_production_contracts": false,
+    "broadcasts_transactions": false,
+    "uses_real_private_keys": false,
+    "stores_rpc_url": false,
+    "local_or_fork_only": true
+  }
+}

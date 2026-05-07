@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencode.local/web3-ai-bounty/code_index.schema.json",
+  "title": "Web3 Solidity Code Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "project", "source_files", "contracts", "storage_index", "callgraph", "risk_signals", "metrics"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "generated_at": { "$ref": "#/$defs/timestamp" },
+    "project": { "$ref": "#/$defs/project" },
+    "source_files": { "type": "array", "items": { "$ref": "#/$defs/source_file" } },
+    "contracts": { "type": "array", "items": { "$ref": "#/$defs/contract" } },
+    "storage_index": { "$ref": "#/$defs/storage_index" },
+    "callgraph": { "$ref": "#/$defs/callgraph" },
+    "risk_signals": { "type": "array", "items": { "$ref": "#/$defs/risk_signal" } },
+    "metrics": { "$ref": "#/$defs/metrics" }
+  },
+  "$defs": {
+    "timestamp": { "type": "string", "format": "date-time" },
+    "maybe_string": { "type": ["string", "null"] },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "branch", "commit"],
+      "properties": {
+        "root": { "type": "string" },
+        "branch": { "$ref": "#/$defs/maybe_string" },
+        "commit": { "$ref": "#/$defs/maybe_string" }
+      }
+    },
+    "source_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "lines", "imports"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "lines": { "type": "integer", "minimum": 1 },
+        "imports": { "type": "array", "items": { "$ref": "#/$defs/import" } }
+      }
+    },
+    "import": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "line", "statement"],
+      "properties": {
+        "path": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "statement": { "type": "string" }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "file", "name", "kind", "abstract", "line_start", "line_end", "bases", "imports", "state_variables", "modifiers", "functions", "events", "errors"],
+      "properties": {
+        "id": { "type": "string" },
+        "file": { "type": "string" },
+        "name": { "type": "string" },
+        "kind": { "type": "string", "enum": ["contract", "interface", "library"] },
+        "abstract": { "type": "boolean" },
+        "line_start": { "type": "integer", "minimum": 1 },
+        "line_end": { "type": "integer", "minimum": 1 },
+        "bases": { "type": "array", "items": { "type": "string" } },
+        "imports": { "type": "array", "items": { "type": "string" } },
+        "state_variables": { "type": "array", "items": { "$ref": "#/$defs/state_variable" } },
+        "modifiers": { "type": "array", "items": { "$ref": "#/$defs/modifier" } },
+        "functions": { "type": "array", "items": { "$ref": "#/$defs/function" } },
+        "events": { "type": "array", "items": { "type": "string" } },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "state_variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "visibility", "qualifiers", "line", "slot_order_hint", "storage_persistent", "initializer", "sensitive_tags"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "visibility": { "type": "string", "enum": ["public", "private", "internal", "external"] },
+        "qualifiers": { "type": "array", "items": { "type": "string" } },
+        "line": { "type": "integer", "minimum": 1 },
+        "slot_order_hint": { "type": ["integer", "null"], "minimum": 0 },
+        "storage_persistent": { "type": "boolean" },
+        "initializer": { "type": "string" },
+        "sensitive_tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "modifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "line_start", "line_end", "parameters", "auth_checks", "reverts", "uses_placeholder"],
+      "properties": {
+        "name": { "type": "string" },
+        "line_start": { "type": "integer", "minimum": 1 },
+        "line_end": { "type": "integer", "minimum": 1 },
+        "parameters": { "type": "array", "items": { "$ref": "#/$defs/param" } },
+        "auth_checks": { "type": "array", "items": { "type": "string" } },
+        "reverts": { "type": "array", "items": { "type": "string" } },
+        "uses_placeholder": { "type": "boolean" }
+      }
+    },
+    "function": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "kind", "line_start", "line_end", "visibility", "state_mutability", "modifiers", "parameters", "returns", "has_body", "reads", "writes", "write_events", "external_calls", "low_level_calls", "internal_calls", "asset_flow", "auth_checks", "emits", "reverts", "creates", "risk_tags", "signature"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "kind": { "type": "string", "enum": ["function", "constructor", "fallback", "receive"] },
+        "line_start": { "type": "integer", "minimum": 1 },
+        "line_end": { "type": "integer", "minimum": 1 },
+        "visibility": { "type": "string", "enum": ["public", "private", "internal", "external"] },
+        "state_mutability": { "type": "string", "enum": ["nonpayable", "payable", "view", "pure"] },
+        "modifiers": { "type": "array", "items": { "type": "string" } },
+        "parameters": { "type": "array", "items": { "$ref": "#/$defs/param" } },
+        "returns": { "type": "array", "items": { "$ref": "#/$defs/param" } },
+        "has_body": { "type": "boolean" },
+        "reads": { "type": "array", "items": { "type": "string" } },
+        "writes": { "type": "array", "items": { "type": "string" } },
+        "write_events": { "type": "array", "items": { "$ref": "#/$defs/write_event" } },
+        "external_calls": { "type": "array", "items": { "$ref": "#/$defs/external_call" } },
+        "low_level_calls": { "type": "array", "items": { "$ref": "#/$defs/low_level_call" } },
+        "internal_calls": { "type": "array", "items": { "type": "string" } },
+        "asset_flow": { "$ref": "#/$defs/asset_flow" },
+        "auth_checks": { "type": "array", "items": { "type": "string" } },
+        "emits": { "type": "array", "items": { "type": "string" } },
+        "reverts": { "type": "array", "items": { "type": "string" } },
+        "creates": { "type": "array", "items": { "type": "string" } },
+        "risk_tags": { "type": "array", "items": { "type": "string" } },
+        "signature": { "type": "string" }
+      }
+    },
+    "param": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" }
+      }
+    },
+    "write_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variable", "op", "line_offset", "snippet"],
+      "properties": {
+        "variable": { "type": "string" },
+        "op": { "type": "string" },
+        "line_offset": { "type": "integer", "minimum": 1 },
+        "snippet": { "type": "string" }
+      }
+    },
+    "external_call": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "function", "line_offset", "call"],
+      "properties": {
+        "target": { "type": "string" },
+        "function": { "type": "string" },
+        "line_offset": { "type": "integer", "minimum": 1 },
+        "call": { "type": "string" }
+      }
+    },
+    "low_level_call": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "kind", "line_offset"],
+      "properties": {
+        "target": { "type": "string" },
+        "kind": { "type": "string" },
+        "line_offset": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "asset_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["incoming", "outgoing", "value_moving"],
+      "properties": {
+        "incoming": { "type": "array", "items": { "type": "string" } },
+        "outgoing": { "type": "array", "items": { "type": "string" } },
+        "value_moving": { "type": "boolean" }
+      }
+    },
+    "storage_index": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variables", "writers", "readers", "variables_with_multiple_writers", "sensitive_variables"],
+      "properties": {
+        "variables": { "type": "array", "items": { "$ref": "#/$defs/indexed_variable" } },
+        "writers": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
+        "readers": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
+        "variables_with_multiple_writers": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
+        "sensitive_variables": { "type": "array", "items": { "$ref": "#/$defs/indexed_variable" } }
+      }
+    },
+    "indexed_variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "contract", "name", "type", "visibility", "qualifiers", "line", "slot_order_hint", "storage_persistent", "initializer", "sensitive_tags"],
+      "properties": {
+        "key": { "type": "string" },
+        "contract": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "visibility": { "type": "string", "enum": ["public", "private", "internal", "external"] },
+        "qualifiers": { "type": "array", "items": { "type": "string" } },
+        "line": { "type": "integer", "minimum": 1 },
+        "slot_order_hint": { "type": ["integer", "null"], "minimum": 0 },
+        "storage_persistent": { "type": "boolean" },
+        "initializer": { "type": "string" },
+        "sensitive_tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "callgraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["internal_edges", "external_edges"],
+      "properties": {
+        "internal_edges": { "type": "array", "items": { "$ref": "#/$defs/internal_edge" } },
+        "external_edges": { "type": "array", "items": { "$ref": "#/$defs/external_edge" } }
+      }
+    },
+    "internal_edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "kind", "function"],
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "kind": { "const": "internal" },
+        "function": { "type": "string" }
+      }
+    },
+    "external_edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "target", "function", "kind", "call"],
+      "properties": {
+        "from": { "type": "string" },
+        "target": { "type": "string" },
+        "function": { "type": "string" },
+        "kind": { "type": "string", "enum": ["external", "low-level"] },
+        "call": { "type": "string" }
+      }
+    },
+    "risk_signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "severity", "file", "line", "contract", "function", "message", "lead_template"],
+      "properties": {
+        "type": { "type": "string" },
+        "severity": { "type": "string", "enum": ["info", "low", "medium", "high"] },
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 0 },
+        "contract": { "type": "string" },
+        "function": { "type": "string" },
+        "message": { "type": "string" },
+        "lead_template": { "type": "string" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_file_count", "contract_count", "state_variable_count", "function_count", "public_external_function_count", "value_moving_public_function_count", "risk_signal_count"],
+      "properties": {
+        "source_file_count": { "type": "integer", "minimum": 0 },
+        "contract_count": { "type": "integer", "minimum": 0 },
+        "state_variable_count": { "type": "integer", "minimum": 0 },
+        "function_count": { "type": "integer", "minimum": 0 },
+        "public_external_function_count": { "type": "integer", "minimum": 0 },
+        "value_moving_public_function_count": { "type": "integer", "minimum": 0 },
+        "risk_signal_count": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

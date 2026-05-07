@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "results": {
+    "detectors": [
+      {
+        "check": "reentrancy-eth",
+        "impact": "High",
+        "confidence": "Medium",
+        "description": "VulnerableVault.redeem performs an external transfer before all related accounting assumptions are proven safe.",
+        "elements": [
+          {
+            "type": "function",
+            "name": "VulnerableVault.redeem",
+            "source_mapping": {
+              "filename_relative": "VulnerableVault.sol",
+              "lines": [29]
+            }
+          }
+        ]
+      },
+      {
+        "check": "naming-convention",
+        "impact": "Informational",
+        "confidence": "High",
+        "description": "Variable name does not follow the Solidity naming convention.",
+        "elements": [
+          {
+            "type": "node",
+            "name": "totalSupply",
+            "source_mapping": {
+              "filename_relative": "VulnerableVault.sol",
+              "lines": [8]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

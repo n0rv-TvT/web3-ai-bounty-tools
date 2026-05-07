@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["calibration_case_count", "holdout_case_count", "patched_case_count", "calibration_recall", "holdout_recall", "holdout_precision", "patched_false_positive_rate", "answer_key_leakage_detected", "network_used", "secrets_accessed", "broadcasts_used"],
+  "properties": {
+    "calibration_case_count": {"type": "integer"},
+    "holdout_case_count": {"type": "integer"},
+    "patched_case_count": {"type": "integer"},
+    "calibration_recall": {"type": "number"},
+    "holdout_recall": {"type": "number"},
+    "holdout_precision": {"type": "number"},
+    "patched_false_positive_rate": {"type": "number"},
+    "answer_key_leakage_detected": {"type": "boolean"},
+    "network_used": {"type": "boolean"},
+    "secrets_accessed": {"type": "boolean"},
+    "broadcasts_used": {"type": "boolean"}
+  }
+}

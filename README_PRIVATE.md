@@ -1,5 +1,7 @@
 # Web3-AI Bug Bounty Research Framework
 
+> Legacy private-workflow note. This repository is now intended to publish sanitized reusable skills, prompts, scripts, templates, and workflows. Do not commit real private target data, secrets, raw logs, cookies, RPC URLs, or unsanitized reports here.
+
 Private research framework for PoC-first Web3/AI bug bounty validation.
 
 This repo is not a public product. It is my private research operating system for:

@@ -1,0 +1,415 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencode.local/web3-ai-bounty/lead_database.schema.json",
+  "title": "Web3 Audit Lead Database",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "database_id", "created_at", "updated_at", "audit", "scope", "artifacts", "leads", "indexes", "metrics"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "database_id": { "type": "string", "pattern": "^ldb_[A-Za-z0-9_-]{8,}$" },
+    "created_at": { "$ref": "#/$defs/timestamp" },
+    "updated_at": { "$ref": "#/$defs/timestamp" },
+    "audit": { "$ref": "#/$defs/audit" },
+    "scope": { "$ref": "#/$defs/scope" },
+    "artifacts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact" },
+      "default": []
+    },
+    "leads": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/lead" },
+      "default": []
+    },
+    "indexes": { "$ref": "#/$defs/indexes" },
+    "metrics": { "$ref": "#/$defs/metrics" }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["INTAKE", "LEAD", "INVESTIGATING", "PROVE", "POC_READY", "VALIDATION_READY", "REPORT_READY", "REPORTED", "CHAIN_REQUIRED", "KILL", "DUPLICATE", "OUT_OF_SCOPE", "ACCEPTED_RISK"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["UNKNOWN", "INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CONFIRMED"]
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session_id", "target_name", "mode", "protocol_types"],
+      "properties": {
+        "session_id": { "type": "string", "pattern": "^audit_[A-Za-z0-9_-]{8,}$" },
+        "target_name": { "type": "string", "minLength": 1 },
+        "mode": { "type": "string", "enum": ["bug-bounty", "private-audit", "internal-review", "eval"] },
+        "protocol_types": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "default": []
+        },
+        "repo_path": { "type": "string" },
+        "repo_remote": { "type": "string" },
+        "branch": { "type": "string" },
+        "commit": { "type": "string" },
+        "chain_ids": { "type": "array", "items": { "type": "integer" }, "uniqueItems": true },
+        "notes": { "type": "string" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "assets", "impact_categories", "exclusions"],
+      "properties": {
+        "status": { "type": "string", "enum": ["UNKNOWN", "DRAFT", "CONFIRMED"] },
+        "program_url": { "type": "string" },
+        "assets": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/scope_asset" },
+          "default": []
+        },
+        "impact_categories": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "exclusions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "mainnet_testing_rules": { "type": "string" },
+        "bounty_cap_usd": { "type": "number", "minimum": 0 },
+        "tvl_usd": { "type": "number", "minimum": 0 },
+        "scope_checked_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "scope_asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "identifier"],
+      "properties": {
+        "type": { "type": "string", "enum": ["contract", "repo", "chain", "domain", "ai-agent", "other"] },
+        "identifier": { "type": "string", "minLength": 1 },
+        "chain_id": { "type": "integer" },
+        "address": { "$ref": "#/$defs/address" },
+        "proxy": { "$ref": "#/$defs/address" },
+        "implementation": { "$ref": "#/$defs/address" },
+        "notes": { "type": "string" }
+      }
+    },
+    "address": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "path", "created_at"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^A-[0-9]{4,}$" },
+        "type": {
+          "type": "string",
+          "enum": ["xray", "entrypoints", "invariants", "scanner", "onchain", "poc", "report", "code-index", "audit-report-mining", "other"]
+        },
+        "path": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string" },
+        "command": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "created_at": { "$ref": "#/$defs/timestamp" },
+        "summary": { "type": "string" }
+      }
+    },
+    "lead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sequence", "title", "status", "state", "bug_class", "severity", "confidence", "created_at", "updated_at", "source", "locations", "hypothesis", "impact", "evidence", "validation", "dedupe", "status_history"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^L-[0-9]{4,}$" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "status": { "$ref": "#/$defs/status" },
+        "state": {
+          "type": "string",
+          "enum": ["RAW_LEAD", "SCANNER_LEAD", "MANUAL_LEAD", "HYPOTHESIS", "NEEDS_CONTEXT", "CHAIN_REQUIRED", "POC_REQUIRED", "ECONOMIC_PROOF_REQUIRED", "FALSE_POSITIVE", "DUPLICATE", "KILLED", "CONFIRMED", "REPORT_READY"]
+        },
+        "bug_class": { "type": "string", "minLength": 1 },
+        "severity": { "$ref": "#/$defs/severity" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "created_at": { "$ref": "#/$defs/timestamp" },
+        "updated_at": { "$ref": "#/$defs/timestamp" },
+        "source": { "$ref": "#/$defs/source" },
+        "locations": { "type": "array", "items": { "$ref": "#/$defs/location" }, "default": [] },
+        "hypothesis": { "$ref": "#/$defs/hypothesis" },
+        "impact": { "$ref": "#/$defs/impact" },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "score": { "$ref": "#/$defs/score" },
+        "validation": { "$ref": "#/$defs/validation" },
+        "dedupe": { "$ref": "#/$defs/dedupe" },
+        "kill": { "$ref": "#/$defs/kill" },
+        "chain_requirements": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true, "default": [] },
+        "status_history": { "type": "array", "items": { "$ref": "#/$defs/status_history" }, "minItems": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "KILL" } }, "required": ["status"] },
+          "then": { "required": ["kill"] }
+        },
+        {
+          "if": { "properties": { "status": { "const": "CHAIN_REQUIRED" } }, "required": ["status"] },
+          "then": { "properties": { "chain_requirements": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "DUPLICATE" } }, "required": ["status"] },
+          "then": { "properties": { "dedupe": { "required": ["duplicate_of"] } } }
+        },
+        {
+          "if": { "properties": { "status": { "enum": ["REPORT_READY", "REPORTED"] } }, "required": ["status"] },
+          "then": {
+            "properties": {
+              "evidence": {
+                "properties": { "poc": { "properties": { "status": { "const": "PASS" } } } }
+              },
+              "validation": {
+                "properties": {
+                  "verdict": { "const": "REPORT" },
+                  "questions": { "$ref": "#/$defs/validation_questions_pass" }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin"],
+      "properties": {
+        "origin": {
+          "type": "string",
+          "enum": ["manual", "scanner", "xray", "hypothesis", "invariant", "fuzz", "onchain", "report-mining", "diff-audit", "parallel-lens", "eval"]
+        },
+        "tools": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "artifact_refs": { "type": "array", "items": { "type": "string", "pattern": "^A-[0-9]{4,}$" }, "default": [] },
+        "notes": { "type": "string" }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string" },
+        "contract": { "type": "string" },
+        "function": { "type": "string" },
+        "line_start": { "type": "integer", "minimum": 1 },
+        "line_end": { "type": "integer", "minimum": 1 },
+        "chain_id": { "type": "integer" },
+        "address": { "$ref": "#/$defs/address" },
+        "implementation": { "$ref": "#/$defs/address" },
+        "code_ref": { "type": "string" }
+      }
+    },
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exploit_sentence", "assertion_target"],
+      "properties": {
+        "exploit_sentence": { "type": "string" },
+        "attacker_capability": { "type": "string" },
+        "preconditions": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "steps": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "invariant_broken": { "type": "string" },
+        "assertion_target": { "type": "string" },
+        "expected_impact": { "type": "string" }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["unknown", "stolen-funds", "frozen-funds", "bad-debt", "unauthorized-privileged-action", "account-takeover", "sensitive-data-exposure", "unsafe-signing-tool-execution", "governance-corruption", "other"]
+        },
+        "asset": { "type": "string" },
+        "amount": { "type": "string" },
+        "value_usd": { "type": "number", "minimum": 0 },
+        "attacker_gain": { "type": "string" },
+        "victim_loss": { "type": "string" },
+        "victim": { "type": "string" },
+        "accepted_category_quote": { "type": "string" },
+        "severity_rationale": { "type": "string" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "source_confirmed", "reachable", "poc"],
+      "properties": {
+        "level": { "type": "integer", "minimum": 0, "maximum": 8 },
+        "source_confirmed": { "type": "boolean" },
+        "reachable": { "type": "boolean" },
+        "manual_trace": { "type": "string" },
+        "poc": { "$ref": "#/$defs/poc" },
+        "scanner_refs": { "type": "array", "items": { "type": "string", "pattern": "^A-[0-9]{4,}$" }, "default": [] },
+        "onchain_refs": { "type": "array", "items": { "type": "string", "pattern": "^A-[0-9]{4,}$" }, "default": [] },
+        "notes": { "type": "string" }
+      }
+    },
+    "poc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "type": "string", "enum": ["NONE", "PLANNED", "WRITTEN", "PASS", "FAIL", "BLOCKED"] },
+        "path": { "type": "string" },
+        "command": { "type": "string" },
+        "last_run_at": { "$ref": "#/$defs/timestamp" },
+        "output_summary": { "type": "string" },
+        "fork": { "$ref": "#/$defs/fork" }
+      }
+    },
+    "fork": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "chain_id": { "type": "integer" },
+        "block_number": { "type": "integer", "minimum": 0 },
+        "rpc_env": { "type": "string" }
+      }
+    },
+    "score": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "impact": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "reachability": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "poc_simplicity": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "scope_match": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "novelty": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "economic_realism": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "deductions": { "type": "integer", "maximum": 0 },
+        "total": { "type": "integer" },
+        "rationale": { "type": "string" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdict", "questions"],
+      "properties": {
+        "verdict": { "type": "string", "enum": ["UNCHECKED", "REPORT", "CHAIN_REQUIRED", "KILL"] },
+        "questions": { "$ref": "#/$defs/validation_questions" },
+        "last_checked_at": { "$ref": "#/$defs/timestamp" },
+        "blocker_notes": { "type": "string" },
+        "duplicate_checked": { "type": "boolean" },
+        "intended_behavior_checked": { "type": "boolean" }
+      }
+    },
+    "validation_questions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["in_scope", "reachable", "normal_attacker", "normal_victim", "concrete_impact", "working_poc", "duplicate_intended_checked"],
+      "properties": {
+        "in_scope": { "type": "boolean" },
+        "reachable": { "type": "boolean" },
+        "normal_attacker": { "type": "boolean" },
+        "normal_victim": { "type": "boolean" },
+        "concrete_impact": { "type": "boolean" },
+        "working_poc": { "type": "boolean" },
+        "duplicate_intended_checked": { "type": "boolean" }
+      }
+    },
+    "validation_questions_pass": {
+      "type": "object",
+      "required": ["in_scope", "reachable", "normal_attacker", "normal_victim", "concrete_impact", "working_poc", "duplicate_intended_checked"],
+      "properties": {
+        "in_scope": { "const": true },
+        "reachable": { "const": true },
+        "normal_attacker": { "const": true },
+        "normal_victim": { "const": true },
+        "concrete_impact": { "const": true },
+        "working_poc": { "const": true },
+        "duplicate_intended_checked": { "const": true }
+      }
+    },
+    "dedupe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["group_key"],
+      "properties": {
+        "group_key": { "type": "string" },
+        "scanner_fingerprint": { "type": "string" },
+        "scanner_dedupe_key": { "type": "string" },
+        "duplicate_of": { "type": "string", "pattern": "^L-[0-9]{4,}$" },
+        "related": { "type": "array", "items": { "type": "string", "pattern": "^L-[0-9]{4,}$" }, "default": [] },
+        "chain_links": { "type": "array", "items": { "$ref": "#/$defs/chain_link" }, "default": [] }
+      }
+    },
+    "chain_link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lead_id", "relationship"],
+      "properties": {
+        "lead_id": { "type": "string", "pattern": "^L-[0-9]{4,}$" },
+        "relationship": { "type": "string", "enum": ["precondition", "amplifies", "same-root", "blocks", "duplicate-candidate"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "kill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason"],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": { "type": "string" },
+        "killed_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "status_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["to", "at", "reason"],
+      "properties": {
+        "from": { "$ref": "#/$defs/status" },
+        "to": { "$ref": "#/$defs/status" },
+        "at": { "$ref": "#/$defs/timestamp" },
+        "actor": { "type": "string" },
+        "reason": { "type": "string" }
+      }
+    },
+    "indexes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["next_lead_sequence", "next_artifact_sequence"],
+      "properties": {
+        "next_lead_sequence": { "type": "integer", "minimum": 1 },
+        "next_artifact_sequence": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lead_count": { "type": "integer", "minimum": 0 },
+        "report_ready_count": { "type": "integer", "minimum": 0 },
+        "kill_count": { "type": "integer", "minimum": 0 },
+        "last_recomputed_at": { "$ref": "#/$defs/timestamp" }
+      }
+    }
+  }
+}

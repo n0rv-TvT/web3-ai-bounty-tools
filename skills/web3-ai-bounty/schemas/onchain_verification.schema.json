@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencode.local/web3-ai-bounty/onchain_verification.schema.json",
+  "title": "Web3 On-Chain Verification Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "target", "rpc", "source_verification", "comparisons", "validation_hints", "safety"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "generated_at": { "$ref": "#/$defs/timestamp" },
+    "target": { "$ref": "#/$defs/target" },
+    "rpc": { "$ref": "#/$defs/rpc" },
+    "source_verification": { "$ref": "#/$defs/source_verification" },
+    "comparisons": { "$ref": "#/$defs/comparisons" },
+    "validation_hints": { "$ref": "#/$defs/validation_hints" },
+    "safety": { "$ref": "#/$defs/safety" }
+  },
+  "$defs": {
+    "timestamp": { "type": "string", "format": "date-time" },
+    "address": { "type": "string", "pattern": "^0x[a-f0-9]{40}$" },
+    "maybe_address": { "type": ["string", "null"], "pattern": "^0x[a-f0-9]{40}$" },
+    "maybe_string": { "type": ["string", "null"] },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rpc_available", "chain_id", "chain_name", "block_number", "block_tag", "address", "code_size_bytes", "runtime_sha256", "native_balance_wei", "proxy", "common_calls", "token_balances"],
+      "properties": {
+        "rpc_available": { "type": "boolean" },
+        "chain_id": { "type": ["integer", "null"] },
+        "chain_name": { "$ref": "#/$defs/maybe_string" },
+        "block_number": { "type": ["integer", "null"], "minimum": 0 },
+        "block_tag": { "type": "string" },
+        "address": { "$ref": "#/$defs/address" },
+        "code_size_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "runtime_sha256": { "type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$" },
+        "native_balance_wei": { "$ref": "#/$defs/maybe_string" },
+        "proxy": { "$ref": "#/$defs/proxy" },
+        "common_calls": { "type": "object", "additionalProperties": { "$ref": "#/$defs/call_result" } },
+        "token_balances": { "type": "array", "items": { "$ref": "#/$defs/token_balance" } }
+      }
+    },
+    "proxy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "detected": { "type": "boolean" },
+        "kind": { "$ref": "#/$defs/maybe_string" },
+        "eip1967_implementation": { "$ref": "#/$defs/maybe_address" },
+        "eip1967_admin": { "$ref": "#/$defs/maybe_address" },
+        "eip1967_beacon": { "$ref": "#/$defs/maybe_address" },
+        "beacon_implementation": { "$ref": "#/$defs/maybe_address" },
+        "minimal_proxy": { "type": ["object", "null"] },
+        "effective_implementation": { "$ref": "#/$defs/maybe_address" },
+        "implementation_code_size_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "implementation_runtime_sha256": { "type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$" }
+      }
+    },
+    "call_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signature", "ok", "raw", "decoded"],
+      "properties": {
+        "signature": { "type": "string" },
+        "ok": { "type": "boolean" },
+        "raw": { "$ref": "#/$defs/maybe_string" },
+        "decoded": {},
+        "error": { "type": "string" }
+      }
+    },
+    "token_balance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["token", "holder", "ok", "balance"],
+      "properties": {
+        "token": { "type": "string" },
+        "holder": { "$ref": "#/$defs/address" },
+        "ok": { "type": "boolean" },
+        "raw": { "$ref": "#/$defs/maybe_string" },
+        "balance": { "$ref": "#/$defs/maybe_string" },
+        "token_metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": { "$ref": "#/$defs/maybe_string" },
+            "symbol": { "$ref": "#/$defs/maybe_string" },
+            "decimals": { "$ref": "#/$defs/maybe_string" }
+          }
+        },
+        "error": { "type": "string" }
+      }
+    },
+    "rpc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url_set", "url_source", "url_value_stored", "errors"],
+      "properties": {
+        "url_set": { "type": "boolean" },
+        "url_source": { "$ref": "#/$defs/maybe_string" },
+        "url_value_stored": { "const": false },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "source_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subjects"],
+      "properties": {
+        "subjects": { "type": "array", "items": { "$ref": "#/$defs/source_subject" } }
+      }
+    },
+    "source_subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "address", "summary", "sourcify", "explorer"],
+      "properties": {
+        "role": { "type": "string", "enum": ["target", "implementation"] },
+        "address": { "$ref": "#/$defs/address" },
+        "summary": { "$ref": "#/$defs/source_summary" },
+        "sourcify": { "type": "object" },
+        "explorer": { "type": "object" }
+      }
+    },
+    "source_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verified", "best_provider", "best_match", "contract_name", "compiler_version", "proxy_flag", "implementation"],
+      "properties": {
+        "verified": { "type": "boolean" },
+        "best_provider": { "$ref": "#/$defs/maybe_string" },
+        "best_match": { "$ref": "#/$defs/maybe_string" },
+        "contract_name": { "$ref": "#/$defs/maybe_string" },
+        "compiler_version": { "$ref": "#/$defs/maybe_string" },
+        "proxy_flag": { "type": "boolean" },
+        "implementation": { "$ref": "#/$defs/maybe_address" }
+      }
+    },
+    "comparisons": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "all_passed"],
+      "properties": {
+        "checks": { "type": "array", "items": { "$ref": "#/$defs/comparison_check" } },
+        "all_passed": { "type": ["boolean", "null"] }
+      }
+    },
+    "comparison_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "expected", "actual", "pass"],
+      "properties": {
+        "name": { "type": "string" },
+        "expected": {},
+        "actual": {},
+        "pass": { "type": "boolean" }
+      }
+    },
+    "validation_hints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["errors", "warnings", "positives", "reporting_note"],
+      "properties": {
+        "errors": { "type": "array", "items": { "type": "string" } },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "positives": { "type": "array", "items": { "type": "string" } },
+        "reporting_note": { "type": "string" }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read_only", "broadcasts_transactions", "stores_rpc_url_or_api_key"],
+      "properties": {
+        "read_only": { "const": true },
+        "broadcasts_transactions": { "const": false },
+        "stores_rpc_url_or_api_key": { "const": false }
+      }
+    }
+  }
+}

@@ -1,0 +1,248 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-05-06T00:00:00Z",
+  "inputs": [
+    {
+      "path": "<skill-dir>/examples/slither_results.example.json",
+      "sha256": "26a267f5dd83be3c93e3f5e4d78ab9ca25ad06b53087e4bb68a5e7957e925fb0",
+      "tool": "slither",
+      "raw_count": 2
+    }
+  ],
+  "normalizer": {
+    "dedupe": true,
+    "include_killed_in_leads": false,
+    "code_index": "<skill-dir>/examples/code_index.vault_inflation.example.json"
+  },
+  "summary": {
+    "raw_count": 2,
+    "normalized_count": 2,
+    "lead_count": 1,
+    "chain_required_count": 0,
+    "killed_count": 1,
+    "by_status": {
+      "KILL": 1,
+      "LEAD": 1
+    },
+    "by_severity": {
+      "HIGH": 1,
+      "INFO": 1
+    },
+    "by_bug_class": {
+      "reentrancy-or-callback-ordering": 1,
+      "scanner-signal": 1
+    },
+    "top_leads": [
+      {
+        "id": "S-97216b9d9bb8",
+        "status": "LEAD",
+        "score": 13,
+        "bug_class": "reentrancy-or-callback-ordering",
+        "location": "VulnerableVault.sol:29"
+      }
+    ]
+  },
+  "leads": [
+    {
+      "id": "S-97216b9d9bb8",
+      "tool": "slither",
+      "tools": [
+        "slither"
+      ],
+      "input_path": "<skill-dir>/examples/slither_results.example.json",
+      "raw_index": "0",
+      "rule_id": "reentrancy-eth",
+      "title": "reentrancy-eth",
+      "bug_class": "reentrancy-or-callback-ordering",
+      "category": "execution-ordering",
+      "severity": "HIGH",
+      "confidence": "MEDIUM",
+      "status": "LEAD",
+      "triage_verdict": "LEAD",
+      "file": "VulnerableVault.sol",
+      "line": 29,
+      "line_end": 29,
+      "contract": "VulnerableVault",
+      "function": "redeem",
+      "message": "VulnerableVault.redeem performs an external transfer before all related accounting assumptions are proven safe.",
+      "impact_type": "stolen-funds",
+      "impact_hint": "stolen-funds",
+      "proof_needed": "Trace whether a normal attacker-controlled callback can reenter a sibling path or observe stale state, then assert attacker gain, victim loss, bad debt, or frozen funds.",
+      "proof_questions": [
+        "Which state is updated after the external call?",
+        "Can the callback reach another function touching the same state?",
+        "What exact balance/accounting delta proves impact?",
+        "Code index marks this as value-moving; what exact asset delta proves loss/gain?",
+        "Which written storage variable is the invariant target?"
+      ],
+      "exploit_hypothesis": "Because VulnerableVault.redeem has a reentrancy-or-callback-ordering scanner signal, test whether a normal attacker can execute ordered steps causing stolen-funds.",
+      "dedupe_key": "56cceb3f8d185decc8c4",
+      "group_key": "VulnerableVault | redeem | reentrancy-or-callback-ordering",
+      "fingerprint": "97216b9d9bb81272c3e8",
+      "tags": [
+        "external-call",
+        "scanner",
+        "slither",
+        "state-ordering"
+      ],
+      "code_context": {
+        "contract": "VulnerableVault",
+        "contract_kind": "contract",
+        "contract_id": "VulnerableVault.sol:VulnerableVault",
+        "bases": [],
+        "function": "redeem",
+        "function_id": "VulnerableVault.sol:VulnerableVault.redeem@29",
+        "function_visibility": "external",
+        "state_mutability": "nonpayable",
+        "modifiers": [],
+        "auth_checks": [],
+        "value_moving": true,
+        "asset_flow": {
+          "incoming": [],
+          "outgoing": [
+            "token-transfer-out"
+          ],
+          "value_moving": true
+        },
+        "writes": [
+          "balanceOf",
+          "totalSupply"
+        ],
+        "reads": [
+          "asset",
+          "balanceOf",
+          "totalSupply"
+        ],
+        "external_call_count": 1,
+        "low_level_call_count": 0,
+        "risk_tags": [
+          "permissionless-value-out"
+        ]
+      },
+      "suppression": null,
+      "score": {
+        "impact": 3,
+        "reachability": 3,
+        "poc_simplicity": 2,
+        "scope_match": 1,
+        "novelty": 1,
+        "economic_realism": 3,
+        "deductions": 0,
+        "total": 13,
+        "rationale": "scanner severity/confidence plus code-index reachability/value-flow hints; proof still required"
+      },
+      "references": [],
+      "cwe": null,
+      "swc": null,
+      "raw_excerpt": {
+        "check": "reentrancy-eth",
+        "confidence": "Medium",
+        "description": "VulnerableVault.redeem performs an external transfer before all related accounting assumptions are proven safe.",
+        "elements": [
+          {
+            "name": "VulnerableVault.redeem",
+            "source_mapping": {
+              "filename_relative": "VulnerableVault.sol",
+              "lines": [
+                29
+              ]
+            },
+            "type": "function"
+          }
+        ],
+        "impact": "High"
+      },
+      "merged_count": 1,
+      "merged_fingerprints": [
+        "97216b9d9bb81272c3e8"
+      ]
+    }
+  ],
+  "suppressed": [
+    {
+      "id": "S-69c73736a61c",
+      "tool": "slither",
+      "tools": [
+        "slither"
+      ],
+      "input_path": "<skill-dir>/examples/slither_results.example.json",
+      "raw_index": "1",
+      "rule_id": "naming-convention",
+      "title": "naming-convention",
+      "bug_class": "scanner-signal",
+      "category": "unknown",
+      "severity": "INFO",
+      "confidence": "HIGH",
+      "status": "KILL",
+      "triage_verdict": "KILL",
+      "file": "VulnerableVault.sol",
+      "line": 8,
+      "line_end": 8,
+      "contract": "VulnerableVault",
+      "function": null,
+      "message": "Variable name does not follow the Solidity naming convention.",
+      "impact_type": "unknown",
+      "impact_hint": "unknown",
+      "proof_needed": "Manually confirm reachability from normal attacker privileges, identify concrete accepted impact, and write a PoC with assertions.",
+      "proof_questions": [
+        "Is the line reachable?",
+        "What asset/state changes?",
+        "Can a minimal PoC prove it?"
+      ],
+      "exploit_hypothesis": "Because VulnerableVault.<unknown> has a scanner-signal scanner signal, test whether a normal attacker can execute ordered steps causing unknown.",
+      "dedupe_key": "ddf85480f2397b2daa0e",
+      "group_key": "VulnerableVault | <unknown> | scanner-signal",
+      "fingerprint": "69c73736a61cbdb81d92",
+      "tags": [
+        "scanner",
+        "slither"
+      ],
+      "code_context": {
+        "contract": "VulnerableVault",
+        "contract_kind": "contract",
+        "contract_id": "VulnerableVault.sol:VulnerableVault",
+        "bases": []
+      },
+      "suppression": {
+        "reason": "style/naming issue without direct bounty impact",
+        "kind": "noise-filter"
+      },
+      "score": {
+        "impact": 1,
+        "reachability": 1,
+        "poc_simplicity": 1,
+        "scope_match": 1,
+        "novelty": 1,
+        "economic_realism": 1,
+        "deductions": -7,
+        "total": -1,
+        "rationale": "scanner severity/confidence plus code-index reachability/value-flow hints; proof still required"
+      },
+      "references": [],
+      "cwe": null,
+      "swc": null,
+      "raw_excerpt": {
+        "check": "naming-convention",
+        "confidence": "High",
+        "description": "Variable name does not follow the Solidity naming convention.",
+        "elements": [
+          {
+            "name": "totalSupply",
+            "source_mapping": {
+              "filename_relative": "VulnerableVault.sol",
+              "lines": [
+                8
+              ]
+            },
+            "type": "node"
+          }
+        ],
+        "impact": "Informational"
+      },
+      "merged_count": 1,
+      "merged_fingerprints": [
+        "69c73736a61cbdb81d92"
+      ]
+    }
+  ]
+}

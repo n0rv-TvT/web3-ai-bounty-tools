@@ -1,0 +1,564 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-05-06T00:00:00Z",
+  "project": {
+    "root": "<skill-dir>/evals/vault_inflation",
+    "branch": null,
+    "commit": null
+  },
+  "source_files": [
+    {
+      "path": "VulnerableVault.sol",
+      "sha256": "1a3cd17306bbde76e917b35430dfcbf57158d3c5c4b7ab6363101144e0d618fb",
+      "lines": 36,
+      "imports": [
+        {
+          "path": "../common/MockERC20.sol",
+          "line": 4,
+          "statement": "import \"../common/MockERC20.sol\";"
+        }
+      ]
+    }
+  ],
+  "contracts": [
+    {
+      "id": "VulnerableVault.sol:VulnerableVault",
+      "file": "VulnerableVault.sol",
+      "name": "VulnerableVault",
+      "kind": "contract",
+      "abstract": false,
+      "line_start": 6,
+      "line_end": 35,
+      "bases": [],
+      "imports": [
+        "../common/MockERC20.sol"
+      ],
+      "state_variables": [
+        {
+          "name": "asset",
+          "type": "MockERC20",
+          "visibility": "public",
+          "qualifiers": [
+            "immutable",
+            "public"
+          ],
+          "line": 7,
+          "slot_order_hint": null,
+          "storage_persistent": false,
+          "initializer": "",
+          "sensitive_tags": [
+            "asset"
+          ]
+        },
+        {
+          "name": "totalSupply",
+          "type": "uint256",
+          "visibility": "public",
+          "qualifiers": [
+            "public"
+          ],
+          "line": 8,
+          "slot_order_hint": 0,
+          "storage_persistent": true,
+          "initializer": "",
+          "sensitive_tags": [
+            "supply"
+          ]
+        },
+        {
+          "name": "balanceOf",
+          "type": "mapping(address => uint256)",
+          "visibility": "public",
+          "qualifiers": [
+            "public"
+          ],
+          "line": 9,
+          "slot_order_hint": 1,
+          "storage_persistent": true,
+          "initializer": "",
+          "sensitive_tags": [
+            "balance"
+          ]
+        }
+      ],
+      "modifiers": [],
+      "functions": [
+        {
+          "id": "VulnerableVault.sol:VulnerableVault.constructor@11",
+          "name": "constructor",
+          "kind": "constructor",
+          "line_start": 11,
+          "line_end": 13,
+          "visibility": "public",
+          "state_mutability": "nonpayable",
+          "modifiers": [],
+          "parameters": [
+            {
+              "name": "_asset",
+              "type": "MockERC20"
+            }
+          ],
+          "returns": [],
+          "has_body": true,
+          "reads": [
+            "asset"
+          ],
+          "writes": [
+            "asset"
+          ],
+          "write_events": [
+            {
+              "variable": "asset",
+              "op": "=",
+              "line_offset": 2,
+              "snippet": "asset = _asset;"
+            }
+          ],
+          "external_calls": [],
+          "low_level_calls": [],
+          "internal_calls": [],
+          "asset_flow": {
+            "incoming": [],
+            "outgoing": [],
+            "value_moving": false
+          },
+          "auth_checks": [],
+          "emits": [],
+          "reverts": [],
+          "creates": [],
+          "risk_tags": [],
+          "signature": "constructor(MockERC20 _asset)"
+        },
+        {
+          "id": "VulnerableVault.sol:VulnerableVault.totalAssets@15",
+          "name": "totalAssets",
+          "kind": "function",
+          "line_start": 15,
+          "line_end": 17,
+          "visibility": "public",
+          "state_mutability": "view",
+          "modifiers": [],
+          "parameters": [],
+          "returns": [
+            {
+              "name": "uint256",
+              "type": ""
+            }
+          ],
+          "has_body": true,
+          "reads": [
+            "asset",
+            "balanceOf"
+          ],
+          "writes": [],
+          "write_events": [],
+          "external_calls": [
+            {
+              "target": "asset",
+              "function": "balanceOf",
+              "line_offset": 2,
+              "call": "asset.balanceOf"
+            }
+          ],
+          "low_level_calls": [],
+          "internal_calls": [],
+          "asset_flow": {
+            "incoming": [],
+            "outgoing": [],
+            "value_moving": false
+          },
+          "auth_checks": [],
+          "emits": [],
+          "reverts": [],
+          "creates": [],
+          "risk_tags": [],
+          "signature": "function totalAssets() public view returns (uint256)"
+        },
+        {
+          "id": "VulnerableVault.sol:VulnerableVault.deposit@19",
+          "name": "deposit",
+          "kind": "function",
+          "line_start": 19,
+          "line_end": 27,
+          "visibility": "external",
+          "state_mutability": "nonpayable",
+          "modifiers": [],
+          "parameters": [
+            {
+              "name": "assets",
+              "type": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "returns": [
+            {
+              "name": "shares",
+              "type": "uint256"
+            }
+          ],
+          "has_body": true,
+          "reads": [
+            "asset",
+            "balanceOf",
+            "totalSupply"
+          ],
+          "writes": [
+            "balanceOf",
+            "totalSupply"
+          ],
+          "write_events": [
+            {
+              "variable": "balanceOf",
+              "op": "+=",
+              "line_offset": 7,
+              "snippet": "balanceOf[receiver] += shares;"
+            },
+            {
+              "variable": "totalSupply",
+              "op": "+=",
+              "line_offset": 8,
+              "snippet": "totalSupply += shares;"
+            }
+          ],
+          "external_calls": [
+            {
+              "target": "asset",
+              "function": "transferFrom",
+              "line_offset": 6,
+              "call": "asset.transferFrom"
+            }
+          ],
+          "low_level_calls": [],
+          "internal_calls": [
+            "totalAssets"
+          ],
+          "asset_flow": {
+            "incoming": [
+              "token-transfer-from-caller"
+            ],
+            "outgoing": [],
+            "value_moving": true
+          },
+          "auth_checks": [],
+          "emits": [],
+          "reverts": [],
+          "creates": [],
+          "risk_tags": [],
+          "signature": "function deposit(uint256 assets, address receiver) external returns (uint256 shares)"
+        },
+        {
+          "id": "VulnerableVault.sol:VulnerableVault.redeem@29",
+          "name": "redeem",
+          "kind": "function",
+          "line_start": 29,
+          "line_end": 34,
+          "visibility": "external",
+          "state_mutability": "nonpayable",
+          "modifiers": [],
+          "parameters": [
+            {
+              "name": "shares",
+              "type": "uint256"
+            },
+            {
+              "name": "receiver",
+              "type": "address"
+            }
+          ],
+          "returns": [
+            {
+              "name": "assets",
+              "type": "uint256"
+            }
+          ],
+          "has_body": true,
+          "reads": [
+            "asset",
+            "balanceOf",
+            "totalSupply"
+          ],
+          "writes": [
+            "balanceOf",
+            "totalSupply"
+          ],
+          "write_events": [
+            {
+              "variable": "balanceOf",
+              "op": "-=",
+              "line_offset": 3,
+              "snippet": "balanceOf[msg.sender] -= shares;"
+            },
+            {
+              "variable": "totalSupply",
+              "op": "-=",
+              "line_offset": 4,
+              "snippet": "totalSupply -= shares;"
+            }
+          ],
+          "external_calls": [
+            {
+              "target": "asset",
+              "function": "transfer",
+              "line_offset": 5,
+              "call": "asset.transfer"
+            }
+          ],
+          "low_level_calls": [],
+          "internal_calls": [
+            "totalAssets"
+          ],
+          "asset_flow": {
+            "incoming": [],
+            "outgoing": [
+              "token-transfer-out"
+            ],
+            "value_moving": true
+          },
+          "auth_checks": [],
+          "emits": [],
+          "reverts": [],
+          "creates": [],
+          "risk_tags": [
+            "permissionless-value-out"
+          ],
+          "signature": "function redeem(uint256 shares, address receiver) external returns (uint256 assets)"
+        }
+      ],
+      "events": [],
+      "errors": []
+    }
+  ],
+  "storage_index": {
+    "variables": [
+      {
+        "key": "VulnerableVault.asset",
+        "contract": "VulnerableVault",
+        "name": "asset",
+        "type": "MockERC20",
+        "visibility": "public",
+        "qualifiers": [
+          "immutable",
+          "public"
+        ],
+        "line": 7,
+        "slot_order_hint": null,
+        "storage_persistent": false,
+        "initializer": "",
+        "sensitive_tags": [
+          "asset"
+        ]
+      },
+      {
+        "key": "VulnerableVault.totalSupply",
+        "contract": "VulnerableVault",
+        "name": "totalSupply",
+        "type": "uint256",
+        "visibility": "public",
+        "qualifiers": [
+          "public"
+        ],
+        "line": 8,
+        "slot_order_hint": 0,
+        "storage_persistent": true,
+        "initializer": "",
+        "sensitive_tags": [
+          "supply"
+        ]
+      },
+      {
+        "key": "VulnerableVault.balanceOf",
+        "contract": "VulnerableVault",
+        "name": "balanceOf",
+        "type": "mapping(address => uint256)",
+        "visibility": "public",
+        "qualifiers": [
+          "public"
+        ],
+        "line": 9,
+        "slot_order_hint": 1,
+        "storage_persistent": true,
+        "initializer": "",
+        "sensitive_tags": [
+          "balance"
+        ]
+      }
+    ],
+    "writers": {
+      "VulnerableVault.asset": [
+        "VulnerableVault.sol:VulnerableVault.constructor@11"
+      ],
+      "VulnerableVault.totalSupply": [
+        "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "VulnerableVault.sol:VulnerableVault.redeem@29"
+      ],
+      "VulnerableVault.balanceOf": [
+        "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "VulnerableVault.sol:VulnerableVault.redeem@29"
+      ]
+    },
+    "readers": {
+      "VulnerableVault.asset": [
+        "VulnerableVault.sol:VulnerableVault.constructor@11",
+        "VulnerableVault.sol:VulnerableVault.totalAssets@15",
+        "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "VulnerableVault.sol:VulnerableVault.redeem@29"
+      ],
+      "VulnerableVault.totalSupply": [
+        "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "VulnerableVault.sol:VulnerableVault.redeem@29"
+      ],
+      "VulnerableVault.balanceOf": [
+        "VulnerableVault.sol:VulnerableVault.totalAssets@15",
+        "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "VulnerableVault.sol:VulnerableVault.redeem@29"
+      ]
+    },
+    "variables_with_multiple_writers": {
+      "VulnerableVault.totalSupply": [
+        "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "VulnerableVault.sol:VulnerableVault.redeem@29"
+      ],
+      "VulnerableVault.balanceOf": [
+        "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "VulnerableVault.sol:VulnerableVault.redeem@29"
+      ]
+    },
+    "sensitive_variables": [
+      {
+        "key": "VulnerableVault.asset",
+        "contract": "VulnerableVault",
+        "name": "asset",
+        "type": "MockERC20",
+        "visibility": "public",
+        "qualifiers": [
+          "immutable",
+          "public"
+        ],
+        "line": 7,
+        "slot_order_hint": null,
+        "storage_persistent": false,
+        "initializer": "",
+        "sensitive_tags": [
+          "asset"
+        ]
+      },
+      {
+        "key": "VulnerableVault.totalSupply",
+        "contract": "VulnerableVault",
+        "name": "totalSupply",
+        "type": "uint256",
+        "visibility": "public",
+        "qualifiers": [
+          "public"
+        ],
+        "line": 8,
+        "slot_order_hint": 0,
+        "storage_persistent": true,
+        "initializer": "",
+        "sensitive_tags": [
+          "supply"
+        ]
+      },
+      {
+        "key": "VulnerableVault.balanceOf",
+        "contract": "VulnerableVault",
+        "name": "balanceOf",
+        "type": "mapping(address => uint256)",
+        "visibility": "public",
+        "qualifiers": [
+          "public"
+        ],
+        "line": 9,
+        "slot_order_hint": 1,
+        "storage_persistent": true,
+        "initializer": "",
+        "sensitive_tags": [
+          "balance"
+        ]
+      }
+    ]
+  },
+  "callgraph": {
+    "internal_edges": [
+      {
+        "from": "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "to": "VulnerableVault.sol:VulnerableVault.totalAssets@15",
+        "kind": "internal",
+        "function": "totalAssets"
+      },
+      {
+        "from": "VulnerableVault.sol:VulnerableVault.redeem@29",
+        "to": "VulnerableVault.sol:VulnerableVault.totalAssets@15",
+        "kind": "internal",
+        "function": "totalAssets"
+      }
+    ],
+    "external_edges": [
+      {
+        "from": "VulnerableVault.sol:VulnerableVault.totalAssets@15",
+        "target": "asset",
+        "function": "balanceOf",
+        "kind": "external",
+        "call": "asset.balanceOf"
+      },
+      {
+        "from": "VulnerableVault.sol:VulnerableVault.deposit@19",
+        "target": "asset",
+        "function": "transferFrom",
+        "kind": "external",
+        "call": "asset.transferFrom"
+      },
+      {
+        "from": "VulnerableVault.sol:VulnerableVault.redeem@29",
+        "target": "asset",
+        "function": "transfer",
+        "kind": "external",
+        "call": "asset.transfer"
+      }
+    ]
+  },
+  "risk_signals": [
+    {
+      "type": "permissionless-value-out",
+      "severity": "medium",
+      "file": "VulnerableVault.sol",
+      "line": 29,
+      "contract": "VulnerableVault",
+      "function": "redeem",
+      "message": "VulnerableVault.redeem has permissionless value out signal",
+      "lead_template": "Because a normal caller may reach VulnerableVault.redeem while permissionless value out exists, test whether an invariant can be broken and prove concrete impact."
+    },
+    {
+      "type": "sensitive-storage-multiple-writers",
+      "severity": "info",
+      "file": "",
+      "line": 0,
+      "contract": "VulnerableVault",
+      "function": "",
+      "message": "VulnerableVault.totalSupply has 2 writer functions; compare sibling guards and accounting paths",
+      "lead_template": "Because VulnerableVault.totalSupply is written by multiple paths, compare guards/order/accounting to find a path that desynchronizes state."
+    },
+    {
+      "type": "sensitive-storage-multiple-writers",
+      "severity": "info",
+      "file": "",
+      "line": 0,
+      "contract": "VulnerableVault",
+      "function": "",
+      "message": "VulnerableVault.balanceOf has 2 writer functions; compare sibling guards and accounting paths",
+      "lead_template": "Because VulnerableVault.balanceOf is written by multiple paths, compare guards/order/accounting to find a path that desynchronizes state."
+    }
+  ],
+  "metrics": {
+    "source_file_count": 1,
+    "contract_count": 1,
+    "state_variable_count": 3,
+    "function_count": 4,
+    "public_external_function_count": 4,
+    "value_moving_public_function_count": 2,
+    "risk_signal_count": 3
+  }
+}

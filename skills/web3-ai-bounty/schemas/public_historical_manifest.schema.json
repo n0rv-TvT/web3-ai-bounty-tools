@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["version", "cases"],
+  "properties": {
+    "version": {"type": "string"},
+    "public_case_import_status": {"type": "string"},
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "case_id", "source_type", "source_name", "source_url", "license_note", "commit_hash",
+          "protocol_type", "language", "framework", "is_vulnerable", "is_patched_control",
+          "is_holdout", "detector_allowed_paths", "detector_forbidden_paths", "answer_key_path",
+          "writeup_path", "safety"
+        ],
+        "properties": {
+          "case_id": {"type": "string", "pattern": "^case_[0-9]{4}$"},
+          "source_type": {"enum": ["public_historical", "public_contest", "public_educational", "public_dataset", "local_mock"]},
+          "source_name": {"type": "string"},
+          "source_url": {"type": "string"},
+          "license_note": {"type": "string"},
+          "commit_hash": {"type": "string"},
+          "protocol_type": {"enum": ["vault", "lending", "staking", "bridge", "governance", "amm", "other"]},
+          "language": {"const": "Solidity"},
+          "framework": {"enum": ["Foundry", "Hardhat", "Truffle", "none", "unknown"]},
+          "is_vulnerable": {"type": "boolean"},
+          "is_patched_control": {"type": "boolean"},
+          "is_holdout": {"type": "boolean"},
+          "detector_allowed_paths": {"type": "array", "items": {"type": "string"}},
+          "detector_forbidden_paths": {"type": "array", "items": {"type": "string"}},
+          "answer_key_path": {"type": "string"},
+          "writeup_path": {"type": "string"},
+          "safety": {
+            "type": "object",
+            "required": ["network_allowed_during_detection", "secrets_allowed", "broadcast_allowed", "deployment_scripts_allowed"],
+            "properties": {
+              "network_allowed_during_detection": {"type": "boolean"},
+              "secrets_allowed": {"type": "boolean"},
+              "broadcast_allowed": {"type": "boolean"},
+              "deployment_scripts_allowed": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

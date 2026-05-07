@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencode.local/web3-ai-bounty/economic_proof.schema.json",
+  "title": "Web3 Economic Proof",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "engine",
+    "lead_id",
+    "bug_class",
+    "attack_type",
+    "verdict",
+    "inputs",
+    "amm_manipulation",
+    "impact",
+    "costs",
+    "profitability",
+    "sensitivity",
+    "lead_exit",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "generated_at": { "$ref": "#/$defs/timestamp" },
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "economic_modeler.py" },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "lead_id": { "type": "string", "minLength": 1 },
+    "bug_class": { "type": "string", "minLength": 1 },
+    "attack_type": { "type": "string", "minLength": 1 },
+    "verdict": { "type": "string", "enum": ["REPORT_READY", "KILL"] },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["market", "position", "costs"],
+      "properties": {
+        "market": { "$ref": "#/$defs/market" },
+        "position": { "$ref": "#/$defs/position" },
+        "costs": { "$ref": "#/$defs/input_costs" }
+      }
+    },
+    "amm_manipulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reserve_base_before",
+        "reserve_quote_before",
+        "reserve_base_after",
+        "reserve_quote_after",
+        "target_price_multiplier",
+        "pool_fee_bps",
+        "gross_quote_input",
+        "net_quote_added",
+        "base_output",
+        "manipulation_cost_usd"
+      ],
+      "properties": {
+        "reserve_base_before": { "$ref": "#/$defs/decimal_string" },
+        "reserve_quote_before": { "$ref": "#/$defs/decimal_string" },
+        "reserve_base_after": { "$ref": "#/$defs/decimal_string" },
+        "reserve_quote_after": { "$ref": "#/$defs/decimal_string" },
+        "target_price_multiplier": { "$ref": "#/$defs/decimal_string" },
+        "pool_fee_bps": { "$ref": "#/$defs/decimal_string" },
+        "gross_quote_input": { "$ref": "#/$defs/decimal_string" },
+        "net_quote_added": { "$ref": "#/$defs/decimal_string" },
+        "base_output": { "$ref": "#/$defs/decimal_string" },
+        "manipulation_cost_usd": { "$ref": "#/$defs/decimal_string" }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manipulated_price_usd",
+        "true_price_usd",
+        "max_borrow_usd",
+        "true_safe_debt_usd",
+        "bad_debt_usd",
+        "protocol_loss_usd"
+      ],
+      "properties": {
+        "manipulated_price_usd": { "$ref": "#/$defs/decimal_string" },
+        "true_price_usd": { "$ref": "#/$defs/decimal_string" },
+        "max_borrow_usd": { "$ref": "#/$defs/decimal_string" },
+        "true_safe_debt_usd": { "$ref": "#/$defs/decimal_string" },
+        "bad_debt_usd": { "$ref": "#/$defs/decimal_string" },
+        "protocol_loss_usd": { "$ref": "#/$defs/decimal_string" },
+        "raw_collateral_shortfall_usd": { "$ref": "#/$defs/decimal_string" }
+      }
+    },
+    "costs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flash_loan_fee_usd", "gas_cost_usd", "manipulation_cost_usd", "total_cost_usd"],
+      "properties": {
+        "flash_loan_fee_usd": { "$ref": "#/$defs/decimal_string" },
+        "gas_cost_usd": { "$ref": "#/$defs/decimal_string" },
+        "manipulation_cost_usd": { "$ref": "#/$defs/decimal_string" },
+        "total_cost_usd": { "$ref": "#/$defs/decimal_string" }
+      }
+    },
+    "profitability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gross_revenue_usd", "total_cost_usd", "net_profit_usd", "break_even"],
+      "properties": {
+        "gross_revenue_usd": { "$ref": "#/$defs/decimal_string" },
+        "total_cost_usd": { "$ref": "#/$defs/decimal_string" },
+        "net_profit_usd": { "$ref": "#/$defs/decimal_string" },
+        "break_even": { "type": "boolean" }
+      }
+    },
+    "sensitivity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "break_even_gas_cost_usd",
+        "break_even_total_cost_usd",
+        "minimum_bad_debt_for_profit_usd",
+        "net_profit_if_gas_doubles_usd",
+        "net_profit_if_flash_fee_doubles_usd",
+        "net_profit_if_manipulation_cost_doubles_usd"
+      ],
+      "properties": {
+        "break_even_gas_cost_usd": { "$ref": "#/$defs/decimal_string" },
+        "break_even_total_cost_usd": { "$ref": "#/$defs/decimal_string" },
+        "minimum_bad_debt_for_profit_usd": { "$ref": "#/$defs/decimal_string" },
+        "net_profit_if_gas_doubles_usd": { "$ref": "#/$defs/decimal_string" },
+        "net_profit_if_flash_fee_doubles_usd": { "$ref": "#/$defs/decimal_string" },
+        "net_profit_if_manipulation_cost_doubles_usd": { "$ref": "#/$defs/decimal_string" }
+      }
+    },
+    "lead_exit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": { "type": "string", "enum": ["REPORT_READY", "KILL"] },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_validated",
+        "positive_net_profit",
+        "concrete_bad_debt",
+        "economic_proof_required_for_report_ready"
+      ],
+      "properties": {
+        "schema_validated": { "type": "boolean" },
+        "positive_net_profit": { "type": "boolean" },
+        "concrete_bad_debt": { "type": "boolean" },
+        "economic_proof_required_for_report_ready": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "timestamp": { "type": "string", "format": "date-time" },
+    "decimal_string": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "market": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reserve_base", "reserve_quote", "pool_fee_bps", "true_price_usd", "target_price_multiplier"],
+      "properties": {
+        "reserve_base": { "$ref": "#/$defs/decimal_string" },
+        "reserve_quote": { "$ref": "#/$defs/decimal_string" },
+        "pool_fee_bps": { "$ref": "#/$defs/decimal_string" },
+        "true_price_usd": { "$ref": "#/$defs/decimal_string" },
+        "quote_token_price_usd": { "$ref": "#/$defs/decimal_string" },
+        "target_price_multiplier": { "$ref": "#/$defs/decimal_string" }
+      }
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["collateral_amount", "max_ltv_bps", "debt_token_price_usd"],
+      "properties": {
+        "collateral_amount": { "$ref": "#/$defs/decimal_string" },
+        "max_ltv_bps": { "$ref": "#/$defs/decimal_string" },
+        "debt_token_price_usd": { "$ref": "#/$defs/decimal_string" }
+      }
+    },
+    "input_costs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flash_loan_fee_bps", "gas_cost_usd"],
+      "properties": {
+        "flash_loan_fee_bps": { "$ref": "#/$defs/decimal_string" },
+        "gas_cost_usd": { "$ref": "#/$defs/decimal_string" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "verdict": { "const": "REPORT_READY" } }, "required": ["verdict"] },
+      "then": { "properties": { "lead_exit": { "properties": { "status": { "const": "REPORT_READY" } } } } }
+    },
+    {
+      "if": { "properties": { "verdict": { "const": "KILL" } }, "required": ["verdict"] },
+      "then": { "properties": { "lead_exit": { "properties": { "status": { "const": "KILL" } } } } }
+    }
+  ]
+}

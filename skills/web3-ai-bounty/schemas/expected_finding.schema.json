@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["case_id", "is_vulnerable", "is_patched_control", "source_file", "affected_asset", "impact_type", "expected_no_report_ready"],
+  "properties": {
+    "case_id": {"type": "string"},
+    "is_vulnerable": {"type": "boolean"},
+    "is_patched_control": {"type": "boolean"},
+    "bug_class": {"type": ["string", "null"]},
+    "root_cause_rule": {"type": ["string", "null"]},
+    "source_file": {"type": "string"},
+    "affected_contract": {"type": ["string", "null"]},
+    "affected_function": {"type": ["string", "null"]},
+    "affected_asset": {"type": "string"},
+    "impact_type": {"type": "string"},
+    "expected_severity": {"type": "string"},
+    "exploit_path_tokens": {"type": "array", "items": {"type": "string"}},
+    "expected_no_report_ready": {"type": "boolean"}
+  }
+}

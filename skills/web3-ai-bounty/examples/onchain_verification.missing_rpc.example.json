@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-05-06T00:00:00Z",
+  "target": {
+    "rpc_available": false,
+    "chain_id": null,
+    "chain_name": null,
+    "block_number": null,
+    "block_tag": "latest",
+    "address": "0x0000000000000000000000000000000000000001",
+    "code_size_bytes": null,
+    "runtime_sha256": null,
+    "native_balance_wei": null,
+    "proxy": {},
+    "common_calls": {},
+    "token_balances": []
+  },
+  "rpc": {
+    "url_set": false,
+    "url_source": null,
+    "url_value_stored": false,
+    "errors": [
+      "RPC URL missing. Set RPC_URL, a chain-specific RPC env var, or pass --rpc-url."
+    ]
+  },
+  "source_verification": {
+    "subjects": [
+      {
+        "role": "target",
+        "address": "0x0000000000000000000000000000000000000001",
+        "summary": {
+          "verified": false,
+          "best_provider": null,
+          "best_match": null,
+          "contract_name": null,
+          "compiler_version": null,
+          "proxy_flag": false,
+          "implementation": null
+        },
+        "sourcify": {
+          "provider": "sourcify",
+          "attempted": false,
+          "reason": "disabled"
+        },
+        "explorer": {
+          "provider": "explorer",
+          "attempted": false,
+          "reason": "disabled"
+        }
+      }
+    ]
+  },
+  "comparisons": {
+    "checks": [],
+    "all_passed": null
+  },
+  "validation_hints": {
+    "errors": [],
+    "warnings": [
+      "No verified source found via configured Sourcify/explorer providers.",
+      "No non-zero value-at-risk observed from the requested balance probes."
+    ],
+    "positives": [],
+    "reporting_note": "On-chain verification supports scope/reachability; a local or fork PoC with assertions is still required."
+  },
+  "safety": {
+    "read_only": true,
+    "broadcasts_transactions": false,
+    "stores_rpc_url_or_api_key": false
+  }
+}

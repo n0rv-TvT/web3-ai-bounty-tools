@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":true,"required":["proxy","current_implementation","risks"],"properties":{"proxy":{"type":"object"},"current_implementation":{"type":"object"},"previous_implementations":{"type":"array"},"risks":{"type":"array"}}}

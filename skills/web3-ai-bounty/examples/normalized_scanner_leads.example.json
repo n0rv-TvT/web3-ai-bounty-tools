@@ -1,0 +1,116 @@
+[
+  {
+    "id": "S-97216b9d9bb8",
+    "tool": "slither",
+    "tools": [
+      "slither"
+    ],
+    "input_path": "<skill-dir>/examples/slither_results.example.json",
+    "raw_index": "0",
+    "rule_id": "reentrancy-eth",
+    "title": "reentrancy-eth",
+    "bug_class": "reentrancy-or-callback-ordering",
+    "category": "execution-ordering",
+    "severity": "HIGH",
+    "confidence": "MEDIUM",
+    "status": "LEAD",
+    "triage_verdict": "LEAD",
+    "file": "VulnerableVault.sol",
+    "line": 29,
+    "line_end": 29,
+    "contract": "VulnerableVault",
+    "function": "redeem",
+    "message": "VulnerableVault.redeem performs an external transfer before all related accounting assumptions are proven safe.",
+    "impact_type": "stolen-funds",
+    "impact_hint": "stolen-funds",
+    "proof_needed": "Trace whether a normal attacker-controlled callback can reenter a sibling path or observe stale state, then assert attacker gain, victim loss, bad debt, or frozen funds.",
+    "proof_questions": [
+      "Which state is updated after the external call?",
+      "Can the callback reach another function touching the same state?",
+      "What exact balance/accounting delta proves impact?",
+      "Code index marks this as value-moving; what exact asset delta proves loss/gain?",
+      "Which written storage variable is the invariant target?"
+    ],
+    "exploit_hypothesis": "Because VulnerableVault.redeem has a reentrancy-or-callback-ordering scanner signal, test whether a normal attacker can execute ordered steps causing stolen-funds.",
+    "dedupe_key": "56cceb3f8d185decc8c4",
+    "group_key": "VulnerableVault | redeem | reentrancy-or-callback-ordering",
+    "fingerprint": "97216b9d9bb81272c3e8",
+    "tags": [
+      "external-call",
+      "scanner",
+      "slither",
+      "state-ordering"
+    ],
+    "code_context": {
+      "contract": "VulnerableVault",
+      "contract_kind": "contract",
+      "contract_id": "VulnerableVault.sol:VulnerableVault",
+      "bases": [],
+      "function": "redeem",
+      "function_id": "VulnerableVault.sol:VulnerableVault.redeem@29",
+      "function_visibility": "external",
+      "state_mutability": "nonpayable",
+      "modifiers": [],
+      "auth_checks": [],
+      "value_moving": true,
+      "asset_flow": {
+        "incoming": [],
+        "outgoing": [
+          "token-transfer-out"
+        ],
+        "value_moving": true
+      },
+      "writes": [
+        "balanceOf",
+        "totalSupply"
+      ],
+      "reads": [
+        "asset",
+        "balanceOf",
+        "totalSupply"
+      ],
+      "external_call_count": 1,
+      "low_level_call_count": 0,
+      "risk_tags": [
+        "permissionless-value-out"
+      ]
+    },
+    "suppression": null,
+    "score": {
+      "impact": 3,
+      "reachability": 3,
+      "poc_simplicity": 2,
+      "scope_match": 1,
+      "novelty": 1,
+      "economic_realism": 3,
+      "deductions": 0,
+      "total": 13,
+      "rationale": "scanner severity/confidence plus code-index reachability/value-flow hints; proof still required"
+    },
+    "references": [],
+    "cwe": null,
+    "swc": null,
+    "raw_excerpt": {
+      "check": "reentrancy-eth",
+      "confidence": "Medium",
+      "description": "VulnerableVault.redeem performs an external transfer before all related accounting assumptions are proven safe.",
+      "elements": [
+        {
+          "name": "VulnerableVault.redeem",
+          "source_mapping": {
+            "filename_relative": "VulnerableVault.sol",
+            "lines": [
+              29
+            ]
+          },
+          "type": "function"
+        }
+      ],
+      "impact": "High"
+    },
+    "merged_count": 1,
+    "merged_fingerprints": [
+      "97216b9d9bb81272c3e8"
+    ]
+  }
+]

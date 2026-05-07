@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "database_id": "ldb_example0001",
+  "created_at": "2026-05-06T00:00:00Z",
+  "updated_at": "2026-05-06T00:00:00Z",
+  "audit": {
+    "session_id": "audit_example0001",
+    "target_name": "Example Vault Protocol",
+    "mode": "bug-bounty",
+    "protocol_types": ["erc4626-vault"],
+    "repo_path": ".",
+    "branch": "main",
+    "commit": "unknown",
+    "chain_ids": [1]
+  },
+  "scope": {
+    "status": "DRAFT",
+    "assets": [
+      {
+        "type": "contract",
+        "identifier": "ExampleVault",
+        "chain_id": 1,
+        "address": "0x0000000000000000000000000000000000000001"
+      }
+    ],
+    "impact_categories": ["Direct theft of user funds"],
+    "exclusions": ["Best-practice issues without concrete impact"]
+  },
+  "artifacts": [],
+  "leads": [
+    {
+      "id": "L-0001",
+      "sequence": 1,
+      "title": "First depositor donation inflation in Vault.deposit",
+      "status": "PROVE",
+      "bug_class": "erc4626-inflation",
+      "severity": "HIGH",
+      "confidence": "MEDIUM",
+      "created_at": "2026-05-06T00:00:00Z",
+      "updated_at": "2026-05-06T00:00:00Z",
+      "source": {
+        "origin": "hypothesis",
+        "tools": ["manual"],
+        "artifact_refs": []
+      },
+      "locations": [
+        {
+          "file": "src/Vault.sol",
+          "contract": "Vault",
+          "function": "deposit",
+          "line_start": 120
+        }
+      ],
+      "hypothesis": {
+        "exploit_sentence": "Because the first depositor can mint dust shares and donate assets before a victim deposit, the attacker can inflate share price so the victim receives zero shares and then redeem the victim's assets.",
+        "attacker_capability": "normal user can deposit and transfer underlying directly to the vault",
+        "preconditions": ["empty vault", "no virtual shares/assets", "victim deposits after donation"],
+        "steps": ["attacker deposits dust", "attacker donates underlying", "victim deposits", "attacker redeems"],
+        "invariant_broken": "victim deposit should mint fair shares proportional to assets",
+        "assertion_target": "attackerGain == victimLoss and attackerGain > 0",
+        "expected_impact": "direct theft of victim deposit"
+      },
+      "impact": {
+        "type": "stolen-funds",
+        "asset": "underlying token",
+        "accepted_category_quote": "Direct theft of user funds"
+      },
+      "evidence": {
+        "level": 4,
+        "source_confirmed": true,
+        "reachable": true,
+        "manual_trace": "Deposit share formula uses totalAssets() after direct donation and does not enforce min shares.",
+        "poc": {
+          "status": "PLANNED"
+        },
+        "scanner_refs": [],
+        "onchain_refs": []
+      },
+      "score": {
+        "impact": 3,
+        "reachability": 3,
+        "poc_simplicity": 3,
+        "scope_match": 2,
+        "novelty": 2,
+        "economic_realism": 3,
+        "deductions": 0,
+        "total": 16,
+        "rationale": "Simple direct theft path if target vault has no virtual offset."
+      },
+      "validation": {
+        "verdict": "UNCHECKED",
+        "questions": {
+          "in_scope": false,
+          "reachable": true,
+          "normal_attacker": true,
+          "normal_victim": true,
+          "concrete_impact": true,
+          "working_poc": false,
+          "duplicate_intended_checked": false
+        },
+        "duplicate_checked": false,
+        "intended_behavior_checked": false
+      },
+      "dedupe": {
+        "group_key": "Vault | deposit | erc4626-inflation",
+        "related": [],
+        "chain_links": []
+      },
+      "chain_requirements": [],
+      "tags": ["vault", "erc4626"],
+      "status_history": [
+        {
+          "to": "PROVE",
+          "at": "2026-05-06T00:00:00Z",
+          "actor": "web3-ai-bounty",
+          "reason": "Example lead with plausible direct theft PoC path."
+        }
+      ]
+    }
+  ],
+  "indexes": {
+    "next_lead_sequence": 2,
+    "next_artifact_sequence": 1
+  },
+  "metrics": {
+    "lead_count": 1,
+    "report_ready_count": 0,
+    "kill_count": 0,
+    "last_recomputed_at": "2026-05-06T00:00:00Z"
+  }
+}

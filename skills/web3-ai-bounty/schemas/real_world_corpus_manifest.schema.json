@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["version", "minimums", "cases"],
+  "properties": {
+    "version": {"type": "string"},
+    "minimums": {"type": "object"},
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["case_id", "source_type", "protocol_type", "language", "framework", "is_vulnerable", "is_patched_control", "answer_key_path", "detector_allowed_paths", "detector_forbidden_paths", "allowed_detection_modes", "safety"],
+        "properties": {
+          "case_id": {"type": "string", "pattern": "^case_[0-9]{3}$"},
+          "source_type": {"enum": ["local", "public", "synthetic_realistic", "holdout"]},
+          "protocol_type": {"enum": ["vault", "lending", "staking", "bridge", "governance", "amm", "other"]},
+          "language": {"const": "Solidity"},
+          "framework": {"enum": ["Foundry", "Hardhat", "none"]},
+          "is_vulnerable": {"type": "boolean"},
+          "is_patched_control": {"type": "boolean"},
+          "answer_key_path": {"type": "string"},
+          "detector_allowed_paths": {"type": "array", "items": {"type": "string"}},
+          "detector_forbidden_paths": {"type": "array", "items": {"type": "string"}},
+          "allowed_detection_modes": {"type": "array", "items": {"enum": ["source_only", "source_plus_tests"]}},
+          "safety": {
+            "type": "object",
+            "required": ["network_allowed", "secrets_allowed", "broadcast_allowed"],
+            "properties": {"network_allowed": {"type": "boolean"}, "secrets_allowed": {"type": "boolean"}, "broadcast_allowed": {"type": "boolean"}}
+          }
+        }
+      }
+    }
+  }
+}

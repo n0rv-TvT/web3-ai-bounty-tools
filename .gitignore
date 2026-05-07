@@ -40,8 +40,10 @@ test_output_raw.txt
 # generated noise
 generated/*
 !generated/.gitkeep
+!generated/README.md
 scratch/*
 !scratch/.gitkeep
+!scratch/README.md
 tmp/
 temp/
 .tmp/

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["case_id", "mode", "split", "read_files", "answer_key_read_during_detection", "answer_key_loaded", "network_used", "secrets_accessed", "broadcasts_used", "findings", "frozen_at", "report_hash"],
+  "properties": {
+    "case_id": {"type": "string"},
+    "mode": {"type": "string"},
+    "split": {"type": "string"},
+    "read_files": {"type": "array", "items": {"type": "string"}},
+    "answer_key_read_during_detection": {"type": "boolean"},
+    "answer_key_loaded": {"type": "boolean"},
+    "network_used": {"type": "boolean"},
+    "secrets_accessed": {"type": "boolean"},
+    "broadcasts_used": {"type": "boolean"},
+    "findings": {"type": "array"},
+    "frozen_at": {"type": "string"},
+    "report_hash": {"type": "string"}
+  }
+}

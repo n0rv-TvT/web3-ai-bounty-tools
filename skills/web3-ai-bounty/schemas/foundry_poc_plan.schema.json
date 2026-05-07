@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencode.local/web3-ai-bounty/foundry_poc_plan.schema.json",
+  "title": "Web3 Foundry PoC Generation Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "generator", "inputs", "project", "lead", "target", "pattern", "output", "run", "todo", "safety"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "generated_at": { "$ref": "#/$defs/timestamp" },
+    "generator": { "$ref": "#/$defs/generator" },
+    "inputs": { "$ref": "#/$defs/inputs" },
+    "project": { "$ref": "#/$defs/project" },
+    "lead": { "$ref": "#/$defs/lead" },
+    "target": { "$ref": "#/$defs/target" },
+    "pattern": { "$ref": "#/$defs/pattern" },
+    "output": { "$ref": "#/$defs/output" },
+    "run": { "$ref": "#/$defs/run" },
+    "todo": { "type": "array", "items": { "type": "string" } },
+    "safety": { "$ref": "#/$defs/safety" }
+  },
+  "$defs": {
+    "timestamp": { "type": "string", "format": "date-time" },
+    "maybe_string": { "type": ["string", "null"] },
+    "maybe_integer": { "type": ["integer", "null"] },
+    "maybe_address": { "type": ["string", "null"], "pattern": "^0x[a-f0-9]{40}$" },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "foundry_poc_generator.py" },
+        "version": { "type": "string" }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lead_db", "lead_id", "onchain", "code_index"],
+      "properties": {
+        "lead_db": { "$ref": "#/$defs/maybe_string" },
+        "lead_id": { "$ref": "#/$defs/maybe_string" },
+        "onchain": { "$ref": "#/$defs/maybe_string" },
+        "code_index": { "$ref": "#/$defs/maybe_string" }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "branch", "commit"],
+      "properties": {
+        "root": { "type": "string" },
+        "branch": { "$ref": "#/$defs/maybe_string" },
+        "commit": { "$ref": "#/$defs/maybe_string" }
+      }
+    },
+    "lead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "bug_class", "status", "impact_type", "exploit_sentence"],
+      "properties": {
+        "id": { "$ref": "#/$defs/maybe_string" },
+        "title": { "$ref": "#/$defs/maybe_string" },
+        "bug_class": { "type": "string" },
+        "status": { "$ref": "#/$defs/maybe_string" },
+        "impact_type": { "$ref": "#/$defs/maybe_string" },
+        "exploit_sentence": { "$ref": "#/$defs/maybe_string" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "chain_id", "block_number", "rpc_env", "address", "implementation", "asset", "contract", "function"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["fork", "local"] },
+        "chain_id": { "$ref": "#/$defs/maybe_integer" },
+        "block_number": { "$ref": "#/$defs/maybe_integer" },
+        "rpc_env": { "type": "string" },
+        "address": { "$ref": "#/$defs/maybe_address" },
+        "implementation": { "$ref": "#/$defs/maybe_address" },
+        "asset": { "$ref": "#/$defs/maybe_address" },
+        "contract": { "$ref": "#/$defs/maybe_string" },
+        "function": { "$ref": "#/$defs/maybe_string" }
+      }
+    },
+    "pattern": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "test_name", "steps", "assertions", "control", "harnesses"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "test_name": { "type": "string", "pattern": "^test_" },
+        "steps": { "type": "array", "items": { "type": "string" } },
+        "assertions": { "type": "array", "items": { "type": "string" } },
+        "control": { "type": "string" },
+        "harnesses": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["solidity_path", "metadata_path", "test_contract", "poc_status", "intentionally_fails_until_completed"],
+      "properties": {
+        "solidity_path": { "type": "string" },
+        "metadata_path": { "type": "string" },
+        "test_contract": { "type": "string" },
+        "poc_status": { "type": "string", "enum": ["SCAFFOLD", "FILLED", "PASS", "FAIL"] },
+        "intentionally_fails_until_completed": { "const": true }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["narrow_command", "after_completion_command", "lead_db_command_after_generation", "lead_db_command_after_pass"],
+      "properties": {
+        "narrow_command": { "type": "string" },
+        "after_completion_command": { "type": "string" },
+        "lead_db_command_after_generation": { "type": "string" },
+        "lead_db_command_after_pass": { "type": "string" }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modifies_production_contracts", "broadcasts_transactions", "uses_real_private_keys", "stores_rpc_url", "local_or_fork_only"],
+      "properties": {
+        "modifies_production_contracts": { "const": false },
+        "broadcasts_transactions": { "const": false },
+        "uses_real_private_keys": { "const": false },
+        "stores_rpc_url": { "const": false },
+        "local_or_fork_only": { "const": true }
+      }
+    }
+  }
+}
