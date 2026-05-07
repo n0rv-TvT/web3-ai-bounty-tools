@@ -1,0 +1,89 @@
+# personal messy notes
+PRIVATE_NOTES.md
+**/PRIVATE_NOTES.md
+
+# secrets and credentials
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.seed
+*.wallet
+*seed-phrase*
+*mnemonic*
+secrets/
+credentials/
+cookies/
+tokens/
+wallets/
+rpc-urls.txt
+api-keys.txt
+
+# platform/session material
+session.json
+sessions/
+cookies.txt
+auth.json
+platform-private/
+unsanitized/
+
+# raw logs and noisy outputs
+logs/
+raw-logs/
+**/logs/raw/
+*.log
+*.trace
+test_output_raw.txt
+**/test_output_raw.txt
+
+# generated noise
+generated/*
+!generated/.gitkeep
+scratch/*
+!scratch/.gitkeep
+tmp/
+temp/
+.tmp/
+
+# Foundry outputs
+out/
+cache/
+broadcast/
+**/out/
+**/cache/
+**/broadcast/
+
+# dependencies
+node_modules/
+lib/
+venv/
+.venv/
+vendor/
+
+# Python cache/tooling
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# temporary Codex/OpenCode/tool output
+tool-output/
+opencode-output/
+codex-output/
+.local-tool-output/
+
+# editor/OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# large archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z

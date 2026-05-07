@@ -1,0 +1,20 @@
+{
+  "finding_id": "",
+  "title": "",
+  "target": "",
+  "status": "idea",
+  "bug_class": "",
+  "severity_estimate": "",
+  "confidence": "",
+  "poc_status": "not-started",
+  "report_ready": false,
+  "submitted": false,
+  "accepted": false,
+  "duplicate_checked": false,
+  "n_a_risk": "",
+  "last_updated": "",
+  "next_action": "",
+  "do_not_revisit_reason": null,
+  "do_not_revisit_until": null,
+  "tags": []
+}
