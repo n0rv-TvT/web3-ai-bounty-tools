@@ -7,7 +7,7 @@ description: Validate Web3/AI bug bounty leads through a PoC-first evidence ladd
 
 ## Description
 
-Validate whether a Web3/AI bug bounty lead deserves more time by forcing it through a PoC-first evidence ladder.
+Validate whether a Web3/AI bug bounty lead deserves more time by forcing it through a PoC-first evidence ladder and canonical Web3 statuses.
 
 ## When to use
 
@@ -25,18 +25,21 @@ Validate whether a Web3/AI bug bounty lead deserves more time by forcing it thro
 
 ## Output format
 
-```text
-Decision: PROVE | KILL | DUPLICATE | N/A-RISK | REPORT-READY
-Reason:
-Evidence present:
-Evidence missing:
-Next action:
-Do-not-revisit reason, if killed:
+```yaml
+poc_first_result:
+  schema_version: poc-first-validator/v1
+  status: PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|DUPLICATE|NA_RISK|KILL|REPORT_READY
+  reason: "<one sentence>"
+  evidence_present: []
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+  do_not_revisit_reason: "<if killed/duplicate/NA_RISK>"
 ```
 
 ## Safety rules
 
 - Do not call a lead report-ready without a working PoC and concrete impact.
+- Use canonical Web3 statuses only. Do not output hyphenated or spaced legacy status variants.
 - Do not report scanner-only or theoretical issues.
 - Do not use live transactions or real funds.
 - Do not include unsanitized private target data.

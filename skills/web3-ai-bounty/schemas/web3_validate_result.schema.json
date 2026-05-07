@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/web3_validate_result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["web3_result"],
+  "properties": {
+    "web3_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "command", "severity_mode", "status", "target", "summary", "finding_id", "source_pointer", "scope", "refutation", "seven_question_gate", "dupe_check", "evidence_missing", "verdict_reason", "next_action"],
+      "properties": {
+        "schema_version": {"const": "web3-ai-bounty/v1"},
+        "command": {"const": "web3-validate"},
+        "severity_mode": {"$ref": "#/$defs/severity_mode"},
+        "status": {"enum": ["REPORT_READY", "PROVE", "CHAIN_REQUIRED", "NEEDS_CONTEXT", "NEEDS_SCOPE_CONFIRMATION", "DUPLICATE", "NA_RISK", "KILL"]},
+        "target": {"type": "string"},
+        "summary": {"type": "string"},
+        "finding_id": {"type": "string"},
+        "source_pointer": {"type": "string"},
+        "scope": {"$ref": "#/$defs/scope_gate"},
+        "refutation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["why_false", "blocking_control", "missing_evidence", "duplicate_or_na_risk"],
+          "properties": {
+            "why_false": {"type": "string"},
+            "blocking_control": {"type": "string"},
+            "missing_evidence": {"type": "array"},
+            "duplicate_or_na_risk": {"type": "string"}
+          }
+        },
+        "seven_question_gate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["in_scope", "reachable", "normal_attacker", "normal_victim", "concrete_impact", "working_poc_assertions", "duplicate_intended_checked"],
+          "properties": {
+            "in_scope": {"type": "boolean"},
+            "reachable": {"type": "boolean"},
+            "normal_attacker": {"type": "boolean"},
+            "normal_victim": {"type": "boolean"},
+            "concrete_impact": {"type": "boolean"},
+            "working_poc_assertions": {"type": "boolean"},
+            "duplicate_intended_checked": {"type": "boolean"}
+          }
+        },
+        "dupe_check": {"$ref": "#/$defs/dupe_gate"},
+        "evidence_missing": {"type": "array"},
+        "verdict_reason": {"type": "string"},
+        "next_action": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "severity_mode": {"enum": ["critical-bounty", "medium-bounty", "audit-review", "learning"]},
+    "scope_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact", "confidence", "affected_component_in_scope", "affected_asset_in_scope", "claimed_impact_accepted", "exclusions_apply", "testing_method_allowed"],
+      "properties": {
+        "artifact": {"type": "string"},
+        "confidence": {"enum": ["confirmed", "partial", "unknown"]},
+        "affected_component_in_scope": {"type": "boolean"},
+        "affected_asset_in_scope": {"type": "boolean"},
+        "claimed_impact_accepted": {"type": "boolean"},
+        "exclusions_apply": {"type": "boolean"},
+        "testing_method_allowed": {"type": "boolean"}
+      }
+    },
+    "dupe_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_decision", "duplicate_of", "unresolved_reason"],
+      "properties": {
+        "review_decision": {"enum": ["CLEAR", "DUPLICATE", "INTENDED_BEHAVIOR", "KNOWN_RISK", "EXCLUDED", "NA_RISK", "NEEDS_CONTEXT"]},
+        "duplicate_of": {"type": ["string", "null"]},
+        "unresolved_reason": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

@@ -12,6 +12,10 @@ from typing import Any
 SCHEMA_DIR = Path(__file__).resolve().parents[1] / "schemas"
 SCHEMA_FILES = {
     "web3_result": "web3_result.schema.json",
+    "web3_hunt_result": "web3_hunt_result.schema.json",
+    "web3_poc_result": "web3_poc_result.schema.json",
+    "web3_validate_result": "web3_validate_result.schema.json",
+    "web3_report_result": "web3_report_result.schema.json",
     "target_scope": "target_scope.schema.json",
     "dupe_check": "dupe_check.schema.json",
     "execution_safety": "execution_safety.schema.json",

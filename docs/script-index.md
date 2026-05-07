@@ -21,6 +21,7 @@ Repo-level operational scripts live under `scripts/`.
 | `no_overfit_guard.py` | Guard against benchmark leakage and overfit claims |
 | `pipeline_enforcer.py` | Enforce final evidence/report pipeline status |
 | `schema_validator.py` | Validate Web3 workflow JSON artifacts against schemas |
+| `web3_result_lint.py` | Extract and validate `web3_result` blocks from saved Opencode command output |
 
 Example schema validation:
 
@@ -29,6 +30,8 @@ python3 skills/web3-ai-bounty/scripts/schema_validator.py web3_result result.jso
 python3 skills/web3-ai-bounty/scripts/schema_validator.py target_scope target-scope.json
 python3 skills/web3-ai-bounty/scripts/schema_validator.py dupe_check dupe-check.json
 python3 skills/web3-ai-bounty/scripts/schema_validator.py execution_safety execution-safety.json
+python3 skills/web3-ai-bounty/scripts/schema_validator.py web3_validate_result validate-result.json
+python3 skills/web3-ai-bounty/scripts/web3_result_lint.py --strict --require opencode-output.md
 ```
 
 Example execution safety classification:

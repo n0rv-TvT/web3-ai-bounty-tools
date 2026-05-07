@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/web3_hunt_result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["web3_result"],
+  "properties": {
+    "web3_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "command", "severity_mode", "status", "target", "summary", "target_summary", "scope_artifact", "scope_confidence", "target_resume_state", "current_best_leads", "active_hypotheses", "killed", "duplicate", "na_risk", "best_prove_candidate", "next_action"],
+      "properties": {
+        "schema_version": {"const": "web3-ai-bounty/v1"},
+        "command": {"const": "web3-hunt"},
+        "severity_mode": {"$ref": "#/$defs/severity_mode"},
+        "status": {"enum": ["PROVE", "CHAIN_REQUIRED", "NEEDS_CONTEXT", "NEEDS_SCOPE_CONFIRMATION", "DUPLICATE", "NA_RISK", "AUDIT_NOTE", "LOW_INFO", "KILL"]},
+        "target": {"type": "string"},
+        "summary": {"type": "string"},
+        "target_summary": {"type": "string"},
+        "scope_artifact": {"type": "string"},
+        "scope_confidence": {"enum": ["confirmed", "partial", "unknown"]},
+        "target_resume_state": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["target_index", "current_best_leads", "active_hypotheses", "poc_written", "poc_passing", "killed", "duplicate", "na_risk", "status_counts", "scope_artifact", "scope_confidence", "next_action"],
+          "properties": {
+            "target_index": {"type": "string"},
+            "current_best_leads": {"type": "array"},
+            "active_hypotheses": {"type": "array"},
+            "poc_written": {"type": "boolean"},
+            "poc_passing": {"type": "boolean"},
+            "killed": {"type": "array"},
+            "duplicate": {"type": "array"},
+            "na_risk": {"type": "array"},
+            "status_counts": {"type": "object"},
+            "scope_artifact": {"type": "string"},
+            "scope_confidence": {"enum": ["confirmed", "partial", "unknown"]},
+            "next_action": {"type": "string"}
+          }
+        },
+        "current_best_leads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["id", "status", "source_pointer", "impact_claim", "evidence_missing", "kill_condition", "next_action"],
+            "properties": {
+              "id": {"type": "string"},
+              "status": {"$ref": "#/$defs/hunt_status"},
+              "source_pointer": {"type": "string"},
+              "impact_claim": {"type": "string"},
+              "evidence_missing": {"type": "array"},
+              "kill_condition": {"type": "string"},
+              "next_action": {"type": "string"}
+            }
+          }
+        },
+        "active_hypotheses": {"type": "array"},
+        "killed": {"type": "array"},
+        "duplicate": {"type": "array"},
+        "na_risk": {"type": "array"},
+        "best_prove_candidate": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["id", "reason", "command"],
+          "properties": {
+            "id": {"type": ["string", "null"]},
+            "reason": {"type": "string"},
+            "command": {"type": "string"}
+          }
+        },
+        "next_action": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "severity_mode": {"enum": ["critical-bounty", "medium-bounty", "audit-review", "learning"]},
+    "hunt_status": {"enum": ["PROVE", "CHAIN_REQUIRED", "NEEDS_CONTEXT", "NEEDS_SCOPE_CONFIRMATION", "DUPLICATE", "NA_RISK", "AUDIT_NOTE", "LOW_INFO", "KILL"]}
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/web3_poc_result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["web3_result"],
+  "properties": {
+    "web3_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "command", "severity_mode", "status", "target", "summary", "finding_id", "source_pointer", "scope_artifact", "test_file", "exploit_test", "control_test", "assertion", "kill_condition", "safety", "execution_command", "poc_result", "evidence_missing", "last_result", "next_action"],
+      "properties": {
+        "schema_version": {"const": "web3-ai-bounty/v1"},
+        "command": {"const": "web3-poc"},
+        "severity_mode": {"$ref": "#/$defs/severity_mode"},
+        "status": {"enum": ["PROVE", "CHAIN_REQUIRED", "NEEDS_CONTEXT", "NA_RISK", "KILL"]},
+        "target": {"type": "string"},
+        "summary": {"type": "string"},
+        "finding_id": {"type": "string"},
+        "source_pointer": {"type": "string"},
+        "scope_artifact": {"type": "string"},
+        "test_file": {"type": ["string", "null"]},
+        "exploit_test": {"type": ["string", "null"]},
+        "control_test": {"type": ["string", "null"]},
+        "assertion": {"type": "string"},
+        "kill_condition": {"type": "string"},
+        "safety": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["gate_command", "classification", "allowed_to_execute", "requires_user_confirmation"],
+          "properties": {
+            "gate_command": {"type": "string"},
+            "classification": {"$ref": "#/$defs/execution_classification_or_not_run"},
+            "allowed_to_execute": {"type": "boolean"},
+            "requires_user_confirmation": {"type": "boolean"}
+          }
+        },
+        "execution_command": {"type": ["string", "null"]},
+        "poc_result": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "evidence_missing": {"type": "array"},
+        "last_result": {"type": "string"},
+        "next_action": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "severity_mode": {"enum": ["critical-bounty", "medium-bounty", "audit-review", "learning"]},
+    "execution_classification_or_not_run": {"enum": ["SAFE_READ_ONLY", "SAFE_LOCAL_TEST", "SAFE_LOCAL_FORK_READONLY", "NEEDS_USER_RPC_CONFIRMATION", "NEEDS_USER_NETWORK_CONFIRMATION", "REVIEW_REQUIRED", "BLOCKED_BROADCAST", "BLOCKED_SECRET_REQUIRED", "BLOCKED_PRODUCTION_ACTION", "BLOCKED_DESTRUCTIVE_COMMAND", "BLOCKED_DEPENDENCY_INSTALL", "BLOCKED_ENV_ACCESS", "NOT_RUN"]}
+  }
+}

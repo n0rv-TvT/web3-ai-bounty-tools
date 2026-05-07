@@ -7,7 +7,7 @@ description: Apply the 7-question bug bounty report-readiness gate before submis
 
 ## Description
 
-Apply a strict bug bounty report-readiness gate to decide whether to submit, hold, downgrade, or kill a finding.
+Apply a strict bug bounty report-readiness gate to decide whether a Web3/AI finding is `REPORT_READY`, blocked for more evidence, duplicate/N/A-risk, or killed.
 
 ## When to use
 
@@ -26,22 +26,26 @@ Apply a strict bug bounty report-readiness gate to decide whether to submit, hol
 
 ## Output format
 
-```text
-Report readiness: READY | HOLD | KILL | DUPLICATE | N/A-RISK
-7-question gate:
-1. In scope:
-2. Reachable:
-3. Normal attacker:
-4. Normal victim/action:
-5. Concrete impact:
-6. Working PoC:
-7. Duplicate/intended checked:
-Final recommendation:
+```yaml
+report_readiness_result:
+  schema_version: report-readiness/v1
+  status: REPORT_READY|REPORT_BLOCKED|PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|DUPLICATE|NA_RISK|KILL
+  seven_question_gate:
+    in_scope: true|false
+    reachable: true|false
+    normal_attacker: true|false
+    normal_victim_action: true|false
+    concrete_impact: true|false
+    working_poc: true|false
+    duplicate_intended_checked: true|false
+  evidence_missing: []
+  final_recommendation: "<submit, block, continue, or stop>"
 ```
 
 ## Safety rules
 
 - All seven gate answers must be yes for report-ready.
+- Use canonical Web3 statuses only. Do not output generic readiness words or hyphenated legacy status variants.
 - Do not rely on speculation or "could potentially" language.
 - Do not submit if exclusions apply.
 - Keep reports sanitized in this repo.

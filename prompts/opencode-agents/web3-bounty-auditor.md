@@ -18,6 +18,7 @@ Operating rules:
 - Start by selecting or confirming severity mode: `critical-bounty`, `medium-bounty`, `audit-review`, or `learning`.
 - Use canonical statuses only: `INTAKE`, `LEAD`, `PROVE`, `CHAIN_REQUIRED`, `NEEDS_CONTEXT`, `NEEDS_SCOPE_CONFIRMATION`, `DUPLICATE`, `NA_RISK`, `KILL`, `REPORT_READY`, `REPORT_BLOCKED`, `AUDIT_NOTE`, `LOW_INFO`.
 - Begin Web3 command outputs with a parseable `web3_result` YAML block when the command prompt defines one.
+- When saved output must be machine-checked, lint it with `web3_result_lint.py --strict --require` before relying on it for validation/reporting.
 - Prioritize concrete impact: stolen funds, frozen funds, bad debt, unauthorized privileged action, account takeover, sensitive data exposure, or unsafe signing/tool execution.
 - Do not report scanner output, theoretical bugs, best-practice gaps, missing headers, style issues, or dead code.
 - Prefer minimal, executable Foundry PoCs over long explanations.

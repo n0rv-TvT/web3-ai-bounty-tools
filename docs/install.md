@@ -15,18 +15,21 @@ The repository copy is not automatically active in Opencode. To inspect what wou
 
 ```bash
 bash scripts/install-opencode-assets.sh --dry-run
+bash scripts/install-opencode-assets.sh --dry-run --web3-only
 ```
 
 Verify the currently active Opencode config without changing files:
 
 ```bash
 bash scripts/install-opencode-assets.sh --verify
+bash scripts/install-opencode-assets.sh --verify --web3-only --verify-hashes
 ```
 
 Install the repo assets into `~/.config/opencode` only when you are ready:
 
 ```bash
 bash scripts/install-opencode-assets.sh --install
+bash scripts/install-opencode-assets.sh --install --web3-only --verify-hashes
 ```
 
 By default the installer backs up overwritten files under:
@@ -38,7 +41,7 @@ By default the installer backs up overwritten files under:
 Use a custom destination for testing:
 
 ```bash
-bash scripts/install-opencode-assets.sh --install --dest /tmp/opencode-test
+bash scripts/install-opencode-assets.sh --install --dest /tmp/opencode-test --web3-only --verify-hashes
 ```
 
 The installer copies:
@@ -50,6 +53,8 @@ prompts/opencode-agents/*   -> DEST/agents/
 ```
 
 and verifies the active Web3 workflow contains `web3_result` schemas across `/web3-*` commands, `/web3-scope`, `/web3-dupe-check`, `/web3-exec-gate`, canonical statuses, schema validators, and scope/duplicate/execution checks.
+
+`--web3-only` uses `install-manifest.json` to install only the Web3 workflow and supporting skills. `--verify-hashes` compares repo files against active Opencode files so marker-only checks cannot miss drift.
 
 Example prompts:
 
@@ -78,6 +83,7 @@ Examples:
 ```bash
 python3 skills/web3-ai-bounty/scripts/safety_guard.py --self-test
 python3 skills/web3-ai-bounty/scripts/execution_safety_gate.py --self-test
+python3 skills/web3-ai-bounty/scripts/web3_result_lint.py --self-test
 python3 skills/web3-ai-bounty/scripts/readiness_policy.py --self-test
 python3 skills/web3-ai-bounty/scripts/report_linter.py --help
 ```

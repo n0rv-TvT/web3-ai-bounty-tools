@@ -148,6 +148,7 @@ For non-trivial audits, create or maintain these artifacts. Use the bundled temp
 - `VULNERABILITY_MODULES.md`: deep modules for reentrancy, math, access control, oracles, signatures, bridges, ERC4626, AA, and AI.
 - `scripts/`: executable helper scripts for lead database management, x-ray enumeration, entry-point scanning, invariant extraction, git-risk analysis, scanner normalization, read-only on-chain verification, and Foundry PoC scaffold generation.
 - `schemas/`: JSON schemas for workflow artifacts such as `web3_result`, target scope, duplicate checks, leads, findings, code index, scanner normalization, on-chain verification, and PoC plans.
+- `scripts/web3_result_lint.py`: fail-closed linter for saved Opencode command output; use `--strict --require` for `/web3-hunt`, `/web3-poc`, `/web3-validate`, and `/web3-report` transcripts.
 - `evals/`: intentionally vulnerable mini-protocol fixtures for testing the hunter against known bug shapes.
 - `FOUNDRY_POC_TEMPLATE.md`: human-readable Foundry exploit/control test skeleton.
 - `FOUNDRY_POC_GENERATOR.md`: Lead DB/on-chain/code-index driven Foundry fork/local PoC scaffold generator with pattern mapping and harness insertion.

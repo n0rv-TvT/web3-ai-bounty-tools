@@ -137,6 +137,8 @@ Start with:
 | Script | Purpose |
 |---|---|
 | `safety_guard.py` | Safety self-tests and execution guard checks |
+| `execution_safety_gate.py` | Classify command, file, RPC, network, and PoC execution safety |
+| `web3_result_lint.py` | Validate `web3_result` blocks from saved Opencode command output |
 | `poc_execution_gate.py` | Gate local PoC execution and block unsafe runs |
 | `evidence_package_validator.py` | Validate evidence packages before report drafting |
 | `report_linter.py` | Catch weak or unsafe report wording |

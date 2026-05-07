@@ -31,8 +31,9 @@ Imported repo files are not automatically active. Use the repo-level installer:
 bash scripts/install-opencode-assets.sh --dry-run
 bash scripts/install-opencode-assets.sh --verify
 bash scripts/install-opencode-assets.sh --install
+bash scripts/install-opencode-assets.sh --install --web3-only --verify-hashes
 ```
 
 The installer is intentionally dry-run by default and backs up overwritten active config files during `--install`.
 
-Verification also checks that every active `web3-*.md` command has a `web3_result` schema block.
+Verification also checks that every active `web3-*.md` command has a `web3_result` schema block. Use `--verify-hashes` to compare active files against the repo, and `--web3-only` to use the focused `install-manifest.json` Web3 asset set.

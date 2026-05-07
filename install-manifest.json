@@ -1,0 +1,19 @@
+{
+  "schema_version": "opencode-install-manifest/v1",
+  "description": "Manifest for focused Opencode asset installation.",
+  "groups": {
+    "web3": [
+      {"src": "skills/web3-ai-bounty", "dest": "skills/web3-ai-bounty"},
+      {"src": "skills/web3-audit", "dest": "skills/web3-audit"},
+      {"src": "skills/web3-bounty-xray", "dest": "skills/web3-bounty-xray"},
+      {"src": "skills/duplicate-na-risk-checker", "dest": "skills/duplicate-na-risk-checker"},
+      {"src": "skills/evidence-gate-reviewer", "dest": "skills/evidence-gate-reviewer"},
+      {"src": "skills/foundry-poc-writer", "dest": "skills/foundry-poc-writer"},
+      {"src": "skills/poc-first-validator", "dest": "skills/poc-first-validator"},
+      {"src": "skills/report-readiness-checker", "dest": "skills/report-readiness-checker"},
+      {"src": "skills/report-writing", "dest": "skills/report-writing"},
+      {"src": "prompts/opencode-commands/web3-*.md", "dest": "commands/"},
+      {"src": "prompts/opencode-agents/web3-bounty-auditor.md", "dest": "agents/web3-bounty-auditor.md"}
+    ]
+  }
+}
