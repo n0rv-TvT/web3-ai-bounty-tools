@@ -22,3 +22,29 @@ Generate lead-generation artifacts, not findings:
 9. Output top `LEAD` items that should feed `/web3-hunt` or `/web3-hypothesize`.
 
 Do not report x-ray observations as vulnerabilities without PoCs.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-xray
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: LEAD|PROVE|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|KILL|AUDIT_NOTE|LOW_INFO
+  target: "<program/repo>"
+  summary: "<one sentence>"
+  artifacts:
+    code_index: "x-ray/code-index.json|not_written"
+    entrypoints: "x-ray/entrypoints.json|not_written"
+    invariants: "x-ray/invariants-raw.json|not_written"
+    git_risk: "x-ray/git-risk.json|not_written"
+  top_leads:
+    - id: "<lead id>"
+      status: LEAD|PROVE|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|KILL|AUDIT_NOTE|LOW_INFO
+      source_pointer: "<file:contract:function>"
+      risk_signal: "<signal>"
+      proof_needed: "<proof needed>"
+      next_action: "<exact command or stop reason>"
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```

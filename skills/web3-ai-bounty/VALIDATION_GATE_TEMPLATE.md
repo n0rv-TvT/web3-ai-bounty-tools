@@ -12,7 +12,7 @@ Do not draft a report unless every answer is YES.
 6. Is there a working PoC with assertions proving impact? YES / NO
 7. Did you check docs, prior audits, disclosed reports, changelog, GitHub issues/PRs, and hacktivity for duplicate or intended behavior? YES / NO
 
-Decision: REPORT / CHAIN REQUIRED / KILL
+Decision: REPORT_READY / PROVE / CHAIN_REQUIRED / NEEDS_CONTEXT / NEEDS_SCOPE_CONFIRMATION / DUPLICATE / NA_RISK / KILL
 
 ## Technical Validity
 

@@ -18,6 +18,25 @@ For the selected fixture:
 3. Generate exploit hypotheses.
 4. Pick the correct PoC pattern.
 5. Explain the expected Foundry test path and assertion.
-6. If the fixture is copied into a Foundry project, run the narrow `forge test --match-test ... -vvvv` command.
+6. If the fixture is copied into a Foundry project, classify the narrow `forge test --match-test ... -vvvv` command with `/web3-exec-gate` before running it.
 
 Use this command to benchmark whether the hunter finds known bug shapes before trying real bounty targets.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-eval
+  severity_mode: learning
+  status: PROVE|NEEDS_CONTEXT|KILL|AUDIT_NOTE|LOW_INFO
+  target: "<fixture>"
+  summary: "<one sentence>"
+  fixture: "<name or unknown>"
+  expected_bug_shape: "<shape or unknown>"
+  found_hypotheses: []
+  selected_poc_pattern: "<pattern or null>"
+  execution_safety_classification: SAFE_READ_ONLY|SAFE_LOCAL_TEST|SAFE_LOCAL_FORK_READONLY|NEEDS_USER_RPC_CONFIRMATION|NEEDS_USER_NETWORK_CONFIRMATION|REVIEW_REQUIRED|BLOCKED_BROADCAST|BLOCKED_SECRET_REQUIRED|BLOCKED_PRODUCTION_ACTION|BLOCKED_DESTRUCTIVE_COMMAND|BLOCKED_DEPENDENCY_INSTALL|BLOCKED_ENV_ACCESS|NOT_RUN
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```

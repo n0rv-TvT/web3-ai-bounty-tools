@@ -24,3 +24,23 @@ Rules:
 - Add Foundry PoCs when a finding looks exploitable.
 - Prefer small, focused tests over broad rewrites.
 - Never use real keys, real user funds, or broadcast transactions without explicit authorization.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-bounty
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: LEAD|PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|DUPLICATE|NA_RISK|KILL|REPORT_READY|REPORT_BLOCKED|AUDIT_NOTE|LOW_INFO
+  target: "<program/repo>"
+  summary: "<one sentence>"
+  scope_status: "<confirmed/partial/unknown>"
+  commands_run: []
+  top_hypotheses: []
+  killed: []
+  validated_findings: []
+  report_ready: []
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```

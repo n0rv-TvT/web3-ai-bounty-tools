@@ -19,3 +19,27 @@ Focus on sibling families:
 - `set*` and `update*` admin functions
 
 Return modifier mismatches first. For each mismatch, explain whether it likely matters and what PoC would prove impact.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-siblings
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: LEAD|PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|NA_RISK|KILL|AUDIT_NOTE|LOW_INFO
+  target: "<program/repo/contract>"
+  summary: "<one sentence>"
+  modifier_mismatches:
+    - id: "<lead id>"
+      status: LEAD|PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|NA_RISK|KILL|AUDIT_NOTE|LOW_INFO
+      sibling_family: "<deposit/mint/etc>"
+      protected_function: "<file:contract:function>"
+      weaker_function: "<file:contract:function>"
+      guard_delta: "<missing/mismatched modifier/check>"
+      impact_claim: "<accepted impact or why weak>"
+      proof_needed: "<PoC assertion target>"
+      next_action: "<exact command or stop reason>"
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```

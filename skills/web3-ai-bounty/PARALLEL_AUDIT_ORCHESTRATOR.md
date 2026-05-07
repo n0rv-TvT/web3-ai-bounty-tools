@@ -238,7 +238,7 @@ Construct the strongest argument that the finding is wrong.
 Prove the vulnerable state is achievable in the reviewed code/deployment model.
 
 - Structurally impossible → `KILL`.
-- Requires privileged action outside normal operation → `CHAIN REQUIRED` or `N/A-RISK`.
+- Requires privileged action outside normal operation → `CHAIN_REQUIRED` or `NA_RISK`.
 - Achievable through normal usage/common token behavior → continue.
 
 ### Gate 3 — Trigger
@@ -246,7 +246,7 @@ Prove the vulnerable state is achievable in the reviewed code/deployment model.
 Prove a normal attacker or realistic actor can execute the attack.
 
 - Only trusted role can trigger → demote unless privilege bypass is the bug.
-- Attack cost exceeds extraction and no accepted freeze/privilege impact → `N/A-RISK` or `KILL`.
+- Attack cost exceeds extraction and no accepted freeze/privilege impact → `NA_RISK` or `KILL`.
 - Normal attacker can trigger → continue.
 
 ### Gate 4 — Impact
@@ -254,7 +254,7 @@ Prove a normal attacker or realistic actor can execute the attack.
 Prove material harm to an identifiable victim/protocol/security boundary.
 
 - Self-harm only → `KILL`.
-- Dust-only/no compounding/no accepted severity category → `N/A-RISK`.
+- Dust-only/no compounding/no accepted severity category → `NA_RISK`.
 - Concrete stolen funds, frozen funds, bad debt, unauthorized privileged action, sensitive data leak, account takeover, or unsafe signing/tool execution → continue.
 
 ## Bounty Gate Evaluation
@@ -266,7 +266,7 @@ Important rules:
 - Multiple lenses agreeing is not proof.
 - Concrete source-level refutation wins.
 - No deployer-intent reasoning; evaluate what current code allows, then check docs/scope for intended behavior.
-- `UNCERTAIN` is not report-ready. It can be `LEAD` or `CHAIN REQUIRED`, not `REPORT`.
+- `UNCERTAIN` is not report-ready. It can be `LEAD` or `CHAIN_REQUIRED`, not `REPORT_READY`.
 - Evaluate constructor → initializers → setters → core value-moving functions → emergency paths → callbacks in a fixed pass. Do not repeatedly revisit until a preferred answer appears.
 
 ## Confidence And Promotion
@@ -285,7 +285,7 @@ Promotion rules:
 
 - `LEAD` can become `PROVE` when the complete exploit chain is source-traced or two independent lenses converge with no concrete refutation.
 - Multi-lens agreement never overrides a concrete source-level block.
-- `REPORT` still requires the PoC/evidence/report gates, regardless of confidence.
+- `REPORT_READY` still requires the PoC/evidence/report gates, regardless of confidence.
 
 ## Final Ranking
 

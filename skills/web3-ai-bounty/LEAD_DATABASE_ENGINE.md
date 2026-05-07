@@ -4,7 +4,7 @@ Production component 1 of the Web3 audit engine.
 
 ## What It Does
 
-The Lead Database is the system of record for every suspected vulnerability, from first scanner/x-ray signal to final `REPORT` or `KILL` decision. It converts the prompt stack into a stateful audit engine.
+The Lead Database is the system of record for every suspected vulnerability, from first scanner/x-ray signal to final `REPORT_READY` or `KILL` decision. It converts the prompt stack into a stateful audit engine.
 
 It stores:
 
@@ -24,8 +24,8 @@ Hypothesis Engine    -> upgrades LEAD -> PROVE with exploit sentence/assertion t
 On-Chain Verifier    -> attaches deployed-state artifact refs and value-at-risk evidence
 PoC Builder          -> attaches PoC path/command/result and updates evidence level
 Validator            -> writes strict 7-question gate verdict
-Reporter             -> consumes only REPORT_READY/REPORT leads
-Lead Memory          -> records final lessons from KILL/REPORT outcomes
+Reporter             -> consumes only REPORT_READY leads
+Lead Memory          -> records final lessons from KILL/REPORT_READY outcomes
 ```
 
 ## Tech Stack
@@ -160,7 +160,7 @@ Use `/web3-leads` from Opencode to initialize, import, list, update, validate, a
 
 - Do not store secrets, private keys, seed phrases, RPC keys, or private user data.
 - Every status transition must append `status_history`.
-- Every scanner item starts as `LEAD`, `INTAKE`, `CHAIN_REQUIRED`, or suppressed `KILL`, never `REPORT`.
+- Every scanner item starts as `LEAD`, `INTAKE`, `CHAIN_REQUIRED`, or suppressed `KILL`, never `REPORT_READY`.
 - `KILL` requires a kill reason.
 - `REPORT_READY` requires PoC pass + validation gate pass.
 - `duplicate_of` must point to an existing lead.

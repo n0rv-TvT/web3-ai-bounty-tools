@@ -18,3 +18,21 @@ Return:
 5. Remediation aligned with best practices.
 
 Do not assign severity solely from a standards tag.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-standards
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: LEAD|PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NA_RISK|KILL|AUDIT_NOTE|LOW_INFO
+  target: "<lead/finding>"
+  summary: "<one sentence>"
+  mappings: []
+  why_applies: "<reason>"
+  impact_proof_required: "<proof still required>"
+  remediation_guidance: "<guidance>"
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```

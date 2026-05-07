@@ -1,0 +1,38 @@
+{
+  "schema_version": "web3-target-scope/v1",
+  "status": "NEEDS_CONTEXT",
+  "severity_mode": "critical-bounty",
+  "target": {
+    "program": "",
+    "repo": "",
+    "commit_or_tag": "",
+    "protocol_types": [],
+    "source_of_truth": [],
+    "scope_confidence": "unknown"
+  },
+  "chains": [],
+  "contracts": [],
+  "assets": {
+    "in_scope_tokens": [],
+    "out_of_scope_tokens": [],
+    "value_at_risk_notes": "",
+    "tvl_usd_estimate": null
+  },
+  "accepted_impacts": [],
+  "excluded_impacts": [],
+  "testing_permissions": {
+    "local_tests_allowed": true,
+    "fork_tests_allowed": "unknown",
+    "read_only_rpc_allowed": "unknown",
+    "live_transactions_allowed": false,
+    "broadcast_allowed": false,
+    "mainnet_testing_notes": ""
+  },
+  "privileged_roles_and_recovery": [],
+  "crown_jewels": [],
+  "known_limitations": [],
+  "prior_audits_or_reports": [],
+  "open_questions": [],
+  "scope_blockers": [],
+  "next_action": ""
+}

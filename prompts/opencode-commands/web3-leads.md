@@ -34,3 +34,22 @@ Supported operations:
 Return a concise summary of database path, operation performed, lead IDs changed, validation result, and next proof step.
 
 Do not store secrets, private keys, seed phrases, RPC keys, or private user data in the lead database.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-leads
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: INTAKE|LEAD|PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|DUPLICATE|NA_RISK|KILL|REPORT_READY|AUDIT_NOTE|LOW_INFO
+  target: "<program/repo>"
+  summary: "<one sentence>"
+  database_path: "audit-leads.json"
+  operation_performed: "<init/add/import/list/show/update/validate/metrics/none>"
+  lead_ids_changed: []
+  validation_result: PASS|FAIL|NOT_RUN
+  status_counts: {}
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```

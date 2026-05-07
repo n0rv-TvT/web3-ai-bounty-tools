@@ -39,3 +39,29 @@ Return normalized rows with:
 - suppressed `KILL` noise with reason
 
 Do not report scanner output as a finding.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-ingest-scanners
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: LEAD|NEEDS_CONTEXT|KILL|AUDIT_NOTE
+  target: "<program/repo/scanner output>"
+  summary: "<one sentence>"
+  normalized_report: "normalized-scanner-report.json|not_written"
+  normalized_leads: "normalized-scanner-leads.json|not_written"
+  imported_to_lead_db: true|false
+  rows:
+    - id: "<row id>"
+      status: LEAD|CHAIN_REQUIRED|KILL
+      tool: "<scanner>"
+      source_pointer: "<file:line:function>"
+      bug_class: "<class>"
+      proof_needed: "<manual proof needed>"
+      dedupe_key: "<key>"
+  suppressed: []
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```

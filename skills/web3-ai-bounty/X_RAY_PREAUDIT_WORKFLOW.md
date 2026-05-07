@@ -225,7 +225,7 @@ Every x-ray gap must become one of:
 ```text
 LEAD: needs manual trace
 PROVE: exploit path likely; write PoC
-CHAIN REQUIRED: weak alone
+CHAIN_REQUIRED: weak alone
 KILL: no impact/reachability/scope
 ```
 

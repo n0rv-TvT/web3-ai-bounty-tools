@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/dupe_check.schema.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["web3_result"],
+  "properties": {
+    "web3_result": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema_version", "command", "severity_mode", "status", "target", "summary", "finding_id", "source_pointer", "review_decision", "fingerprints", "sources_checked", "duplicate_of", "intended_behavior_evidence", "exclusion_evidence", "variant_delta", "evidence_missing", "next_action"],
+      "properties": {
+        "schema_version": {"const": "web3-ai-bounty/v1"},
+        "command": {"const": "web3-dupe-check"},
+        "severity_mode": {"type": "string", "enum": ["critical-bounty", "medium-bounty", "audit-review", "learning"]},
+        "status": {"type": "string", "enum": ["PROVE", "DUPLICATE", "NA_RISK", "KILL", "NEEDS_CONTEXT"]},
+        "target": {"type": "string"},
+        "summary": {"type": "string"},
+        "finding_id": {"type": "string"},
+        "source_pointer": {"type": "string"},
+        "review_decision": {"type": "string", "enum": ["CLEAR", "DUPLICATE", "INTENDED_BEHAVIOR", "KNOWN_RISK", "EXCLUDED", "NA_RISK", "NEEDS_CONTEXT"]},
+        "fingerprints": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["root_cause", "sink", "impacted_invariant", "impact_shape", "patch_shape"],
+          "properties": {
+            "root_cause": {"type": "string"},
+            "sink": {"type": "string"},
+            "impacted_invariant": {"type": "string"},
+            "impact_shape": {"type": "string"},
+            "patch_shape": {"type": "string"}
+          }
+        },
+        "sources_checked": {"type": "array", "items": {}},
+        "duplicate_of": {"type": ["string", "null"]},
+        "intended_behavior_evidence": {"type": "array", "items": {}},
+        "exclusion_evidence": {"type": "array", "items": {}},
+        "variant_delta": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["same_root_cause_as_prior", "same_affected_function", "same_sink_or_invariant", "same_patch_shape", "different_attacker_capability", "different_affected_asset", "different_accepted_impact", "why_not_duplicate"],
+          "properties": {
+            "same_root_cause_as_prior": {"$ref": "#/$defs/bool_or_unknown"},
+            "same_affected_function": {"$ref": "#/$defs/bool_or_unknown"},
+            "same_sink_or_invariant": {"$ref": "#/$defs/bool_or_unknown"},
+            "same_patch_shape": {"$ref": "#/$defs/bool_or_unknown"},
+            "different_attacker_capability": {"$ref": "#/$defs/bool_or_unknown"},
+            "different_affected_asset": {"$ref": "#/$defs/bool_or_unknown"},
+            "different_accepted_impact": {"$ref": "#/$defs/bool_or_unknown"},
+            "why_not_duplicate": {"type": ["string", "null"]}
+          }
+        },
+        "do_not_revisit_reason": {"type": ["string", "null"]},
+        "evidence_missing": {"type": "array", "items": {}},
+        "next_action": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "bool_or_unknown": {
+      "oneOf": [
+        {"type": "boolean"},
+        {"type": "string", "enum": ["unknown"]}
+      ]
+    }
+  }
+}

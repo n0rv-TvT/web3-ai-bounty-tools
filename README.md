@@ -15,6 +15,7 @@ This repository is a public Web3/AI bug bounty toolkit focused on:
 - PoC-first vulnerability validation
 - Foundry PoC planning and scaffolding
 - evidence-gated bug bounty workflows
+- execution safety gating before PoC/RPC/tool runs
 - report-readiness checks
 - duplicate and N/A risk reduction
 - reusable AI skills for codebase review, hypothesis generation, PoC writing, and report drafting
@@ -53,6 +54,16 @@ cd web3-ai-bounty-tools
 ```
 
 Example agent prompts:
+
+For Opencode, first verify or install the active runtime assets:
+
+```bash
+bash scripts/install-opencode-assets.sh --dry-run
+bash scripts/install-opencode-assets.sh --verify
+bash scripts/install-opencode-assets.sh --install
+```
+
+The installer is dry-run by default and backs up overwritten files under `~/.config/opencode/backups/web3-ai-bounty-tools/` during `--install`.
 
 ```text
 Install https://github.com/n0rv-TvT/web3-ai-bounty-tools and use the poc-first-validator skill to decide whether this finding is report-ready or should be killed.

@@ -27,15 +27,105 @@ The goal is not to list risks. The goal is to produce validated findings with co
 - Kill scanner-only output, theoretical issues, best-practice gaps, missing comments, style issues, dead code, and findings requiring privileged compromise unless the program explicitly pays for them.
 - If intended behavior, docs, prior audits, exclusions, or recovery mechanisms make the lead weak, say so and move on.
 
+## Severity Modes
+
+Select a mode before triage. If the user does not specify a mode, default to `critical-bounty` for private bounty work and ask before downgrading to broader modes.
+
+### `critical-bounty`
+
+Use for private high-ROI bug bounty hunting.
+
+- Only pursue issues with realistic direct loss, permanent or program-accepted frozen funds, insolvency/bad debt, governance takeover, severe privilege abuse, sensitive data exposure, account takeover, or unsafe signing/tool execution.
+- Kill low-impact, speculative, scanner-only, dust-only, and best-practice leads early.
+- Require strong PoC/economic evidence before report drafting.
+- Treat DoS/griefing/non-standard token issues as `NA_RISK` unless the program scope explicitly accepts them and the PoC proves material impact.
+
+### `medium-bounty`
+
+Use when the program pays Mediums or when a lead has conditional but realistic impact.
+
+- Allow bounded but concrete issues such as temporary fund freeze, claim/withdraw blockage, bounded reward/accounting loss, limited permission bypass, realistic oracle staleness, or measurable griefing cost.
+- Still require exact source path, attacker capability, affected asset, and PoC or executable test plan.
+- Do not label a finding `REPORT_READY` without concrete assertions and scope match.
+
+### `audit-review`
+
+Use for broader audit-style review or public contests where Low/Info observations may be useful.
+
+- Track Low/Info observations, test gaps, centralization notes, invariant concerns, and defensive recommendations.
+- Clearly separate `AUDIT_NOTE` / `LOW_INFO` items from bounty findings.
+- Medium-class leads can include reachable panic reverts, invariant non-convergence, bricked pools, stuck withdrawals, accepted non-standard-token behavior, documented periphery path failures, framework semantic mismatches, and in-scope DoS/freeze conditions.
+
+### `learning`
+
+Use for explanation-heavy sessions and practice.
+
+- Educational notes and speculative branches are allowed.
+- Do not label educational notes as findings.
+- End with what was proven, what was killed, and what remains a learning exercise.
+
+Use only the canonical status labels below in notes and outputs.
+
+## Canonical Status Vocabulary And Output Schemas
+
+Use one canonical status vocabulary everywhere: prompts, Lead DB notes, summaries, validation output, and report blockers. Do not invent variants with spaces, hyphens, or old names.
+
+Legacy mapping:
+
+```text
+CHAIN REQUIRED -> CHAIN_REQUIRED
+NEEDS-CONTEXT -> NEEDS_CONTEXT
+NEEDS SCOPE CONFIRMATION -> NEEDS_SCOPE_CONFIRMATION
+N/A-RISK -> NA_RISK
+AUDIT NOTE -> AUDIT_NOTE
+REPORT -> REPORT_READY
+REPORT BLOCKED -> REPORT_BLOCKED
+REPORT-READY -> REPORT_READY
+```
+
+Canonical statuses:
+
+- `INTAKE`: raw signal not manually confirmed yet.
+- `LEAD`: interesting source/scanner/x-ray signal, not proven.
+- `PROVE`: code path looks reachable and has attacker capability, affected asset, assertion target, and kill condition; build one PoC.
+- `CHAIN_REQUIRED`: standalone impact is weak; needs another bug, condition, or accepted impact class.
+- `NEEDS_CONTEXT`: required evidence or target details are missing.
+- `NEEDS_SCOPE_CONFIRMATION`: affected asset, chain, contract, or impact class may be out of scope.
+- `DUPLICATE`: likely duplicate, known issue, prior audit item, or already-fixed issue.
+- `NA_RISK`: likely not accepted because of exclusions, weak impact, intended behavior, or private-bounty severity mismatch.
+- `KILL`: refuted by source, tests, access control, economics, scope, intended behavior, or no concrete impact.
+- `REPORT_READY`: all seven validation questions are YES and PoC assertions prove in-scope impact.
+- `REPORT_BLOCKED`: report drafting was requested but evidence, scope, duplicate check, or severity rationale is incomplete.
+- `AUDIT_NOTE`: useful audit-review observation that is not a bounty finding.
+- `LOW_INFO`: low/informational observation for audit-review or learning mode only.
+
+Every slash-command response should begin with a parseable `web3_result` block before prose:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-hunt|web3-poc|web3-validate|web3-report|other
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: INTAKE|LEAD|PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|DUPLICATE|NA_RISK|KILL|REPORT_READY|REPORT_BLOCKED|AUDIT_NOTE|LOW_INFO
+  target: "<program/repo/contract>"
+  summary: "<one sentence>"
+  evidence_missing: []
+  next_action: "<exact next command or stop reason>"
+```
+
+For lists, each item must include a canonical `status`, source pointer, impact claim, missing evidence, and next action. Human-readable explanation may follow the schema block, but the schema block is the source of truth.
+
 ## Required Audit Artifacts
 
 For non-trivial audits, create or maintain these artifacts. Use the bundled templates when helpful:
 
 - `AUDIT_WORKBOOK_TEMPLATE.md`: scope brief, attack surface map, assumption ledger, invariants, leads, validation notes.
+- `SCOPE_TARGET_BRIEF.md`: structured `target-scope.json` schema for in-scope assets, accepted impacts, exclusions, target version, and testing permissions.
 - `FINDING_PLAYBOOK.md`: high-signal exploit loops for turning contract surfaces into PoC-ready leads.
 - `HYPOTHESIS_ENGINE.md`: attacker-capability matrix, exploit sentence templates, lead scoring, and fast kill rules.
 - `POC_PATTERN_LIBRARY.md`: bug-class-specific PoC shapes and assertion targets.
 - `PROTOCOL_PLAYBOOKS.md`: protocol-type playbooks for lending, vaults, AMMs, perps, bridges, staking, liquid staking, governance, account abstraction, and AI wallets.
+- `AMM_STABLESWAP_HOOK_CHECKLIST.md`: focused AMM, StableSwap, concentrated-liquidity, and Uniswap v4 hook checklist for boundary-driven Critical/Medium/audit-review leads.
 - `ADVERSARIAL_TEST_HARNESS.md`: reusable malicious token, receiver, oracle, strategy, bridge, and signer harness patterns for proving or killing leads quickly.
 - `INVARIANT_FACTORY.md`: protocol-specific invariant templates for Foundry, Echidna, Medusa, and Halmos workflows.
 - `REAL_BUG_CASEBOOK.md`: paid-bug shapes, accepted-impact patterns, and weak variants that usually get rejected.
@@ -46,6 +136,8 @@ For non-trivial audits, create or maintain these artifacts. Use the bundled temp
 - `ATTACK_VECTOR_DB.md`: local protocol-grouped attack-vector database used by `/web3-vectors`.
 - `AUDIT_REPORT_MINING.md`: workflow for mining public audit reports and turning prior findings into target-specific hypotheses.
 - `REPORT_MINING_SOURCES.md`: public report sources and query patterns for protocol-specific mining.
+- `DUPLICATE_INTENDED_BEHAVIOR_CHECK.md`: duplicate, known-issue, intended-behavior, exclusion, and N/A-risk review before validation/reporting.
+- `EXECUTION_SAFETY_GATE.md`: command/file/RPC/PoC execution safety classifier used before running tools or tests.
 - `LEAD_DATABASE_ENGINE.md`: production JSON lead database schema, lifecycle, CLI, validation rules, metrics, and artifact links.
 - `LEAD_MEMORY_TEMPLATE.md`: project-local memory template for proven/killed leads and faster future triage.
 - `SCANNER_NORMALIZATION.md`: scanner-output ingestion rules for Slither, Aderyn, Mythril/MythX-style, Semgrep, and generic JSON.
@@ -55,19 +147,48 @@ For non-trivial audits, create or maintain these artifacts. Use the bundled temp
 - `LANGUAGE_MODULES.md`: Solidity, Vyper, Solana/Anchor, CosmWasm, ink!, and Stylus audit modules.
 - `VULNERABILITY_MODULES.md`: deep modules for reentrancy, math, access control, oracles, signatures, bridges, ERC4626, AA, and AI.
 - `scripts/`: executable helper scripts for lead database management, x-ray enumeration, entry-point scanning, invariant extraction, git-risk analysis, scanner normalization, read-only on-chain verification, and Foundry PoC scaffold generation.
+- `schemas/`: JSON schemas for workflow artifacts such as `web3_result`, target scope, duplicate checks, leads, findings, code index, scanner normalization, on-chain verification, and PoC plans.
 - `evals/`: intentionally vulnerable mini-protocol fixtures for testing the hunter against known bug shapes.
 - `FOUNDRY_POC_TEMPLATE.md`: human-readable Foundry exploit/control test skeleton.
 - `FOUNDRY_POC_GENERATOR.md`: Lead DB/on-chain/code-index driven Foundry fork/local PoC scaffold generator with pattern mapping and harness insertion.
 - `VALIDATION_GATE_TEMPLATE.md`: pre-report validation checklist.
 - `REPORT_TEMPLATE.md`: impact-first report format.
 
-Keep findings in one of these states:
+Keep every lead or finding in exactly one canonical status from the vocabulary above. Do not use non-canonical variants like `CHAIN REQUIRED`, `N/A-RISK`, `NEEDS-CONTEXT`, `REPORT`, or `REPORT BLOCKED` in new output.
 
-- `LEAD`: interesting signal, not proven.
-- `PROVE`: code path looks reachable; build PoC.
-- `CHAIN REQUIRED`: standalone impact is weak; needs another bug or condition.
-- `KILL`: no reachability, intended behavior, excluded, duplicate, scanner-only, or no concrete impact.
-- `REPORT`: passed validation with working PoC and in-scope impact.
+Every target should maintain a lightweight resume state:
+
+```text
+schema_version
+severity_mode
+target_index
+current_best_leads
+active_hypotheses
+poc_written
+poc_passing
+killed
+duplicate
+na_risk
+status_counts
+next_action
+```
+
+Every finding should track:
+
+```text
+finding_id
+status
+severity_mode
+file_contract_function
+hypothesis
+evidence_found
+evidence_missing
+next_action
+kill_condition
+do_not_revisit_reason
+duplicate_or_na_risk
+last_result
+```
 
 ## Evidence Ladder
 
@@ -80,7 +201,34 @@ Do not skip levels:
 5. Runnable PoC with assertions.
 6. Program scope and exclusion check.
 7. Duplicate/intended-behavior check.
-8. Report.
+8. `REPORT_READY` validation, then report drafting.
+
+## Refutation-First Lead Gate
+
+Every lead must survive refutation before it becomes `PROVE` or receives PoC time. Answer these questions explicitly:
+
+1. Why might this be false?
+2. What modifier, access control, caller check, pause state, initializer state, or role boundary could block it?
+3. What invariant, branch, revert, or existing test would kill it?
+4. What source evidence is missing?
+5. What would make it N/A, duplicate, intended behavior, excluded, or too low impact for the selected severity mode?
+
+Early kill reasons:
+
+- access control blocks exploit
+- function unreachable
+- impact not realistic
+- only scanner output
+- no affected asset
+- no normal attacker path
+- intended behavior
+- duplicate root cause
+- requires privileged malicious admin outside scope
+- no PoC assertion
+- only theoretical worst case
+- scope excludes the affected component or impact class
+
+A lead cannot move to `PROVE` unless it has a plausible source path, attacker capability, affected asset, concrete assertion target, and kill condition.
 
 ## Phase 0: Target Value And Scope Triage
 
@@ -93,6 +241,8 @@ Before deep work, answer:
 - What exclusions are listed verbatim by the program?
 - Is mainnet/fork testing allowed? Are live transactions forbidden?
 - Are admin/operator recovery paths considered valid mitigation by the program?
+
+Create or reuse a `target-scope.json` / `audit-notes/target-scope.json` artifact following `SCOPE_TARGET_BRIEF.md`. If scope evidence is missing, run `/web3-scope` and keep status `NEEDS_SCOPE_CONFIRMATION` until the affected contract/function, chain/address or source commit, asset, accepted impact, exclusions, and testing permissions are explicit.
 
 Score target quality:
 
@@ -113,6 +263,8 @@ Decision:
 Also compute `max_realistic_payout = min(10% * TVL, program_cap)`. If below 10K USD, warn that effort may not be worth it.
 
 Use the `web3_audit_target_score` MCP tool when enough target data is available.
+
+No lead can become `REPORT_READY` unless the relevant scope artifact or equivalent notes prove: exact affected component in scope, affected asset in scope, claimed impact accepted, exclusions do not apply, and the test method is allowed.
 
 ## Phase 1: Protocol Brief Before Deep Code Reading
 
@@ -178,6 +330,8 @@ After the generic surface map, classify the target by protocol type and load the
 
 For each protocol type, use its asset-flow map, accepted invariants, exploit questions, and PoC targets. Generic checklists are not enough; protocol-specific accounting and lifecycle assumptions are where high-value bugs usually hide.
 
+For AMMs, stable swap curves, concentrated liquidity, routers, pool managers, and Uniswap v4-style hooks, also apply `AMM_STABLESWAP_HOOK_CHECKLIST.md`. This is mandatory before killing the target as "no criticals" in `medium-bounty` or `audit-review` mode, because contest-valid Mediums often live in boundary math, hook deltas, quote/execution divergence, stuck withdrawals, reachable panics, and accepted pool-bricking conditions.
+
 ## Phase 2.75: X-Ray Pre-Audit Mode
 
 When the target is a full repo, run an x-ray before hunting: enumerate code, classify entry points, synthesize invariants, map architecture, extract docs/spec assumptions, inspect test coverage signals, and analyze git history for dangerous late changes or security fix hotspots. Use `X_RAY_PREAUDIT_WORKFLOW.md`.
@@ -239,7 +393,7 @@ Made in: <file/function>
 Relied on by: <file/function>
 Violated by: <file/function or condition>
 Impact if false: <fund loss/freeze/bad debt/privilege/data impact>
-Status: LEAD | PROVE | CHAIN REQUIRED | KILL | REPORT
+Status: LEAD | PROVE | CHAIN_REQUIRED | NEEDS_CONTEXT | NEEDS_SCOPE_CONFIRMATION | DUPLICATE | NA_RISK | KILL | REPORT_READY | AUDIT_NOTE | LOW_INFO
 ```
 
 For every assumption in file A, find where file B violates it:
@@ -361,7 +515,7 @@ If a scanner emits a result, manually answer:
 - What accepted impact category does this match?
 - Can I write a minimal PoC today?
 
-If not, mark `KILL` or `CHAIN REQUIRED`.
+If not, mark `KILL` or `CHAIN_REQUIRED`.
 
 When scanners produce JSON, normalize them first with `SCANNER_NORMALIZATION.md`:
 
@@ -602,6 +756,19 @@ Every PoC must follow this order:
 4. Proof: assert exact attacker gain, victim loss, frozen funds, bad debt, unauthorized role/state change, or leaked data.
 5. Control: add `test_control_*` showing honest path works or patched behavior would block the bug when practical.
 
+Before report drafting, every finding must have:
+
+- exact file/contract/function
+- vulnerable code path
+- attacker capability
+- affected asset
+- exploit sequence
+- concrete assertion
+- kill condition
+- exploit test and control test where possible
+
+No PoC assertion means no report-ready finding. A passing test that does not prove impact is not enough.
+
 Rules:
 
 - Name actors like a story: `alice`, `attacker`, `victim`, `bridgeOperator`, `keeper`, `liquidator`. Avoid `addr1`, `user`, `account`.
@@ -642,7 +809,9 @@ function test_exploit_attackerStealsVictimFunds() public {
 }
 ```
 
-Run narrow command first:
+Execution rule: classify commands with `/web3-exec-gate`, `EXECUTION_SAFETY_GATE.md`, or `execution_safety_gate.py` before running generated PoCs or tooling. If a local `poc_execution_gate.py` or project-specific gate exists, use the gate before direct `forge` execution. Do not run fork/RPC or broadcast paths unless explicitly authorized.
+
+Run narrow command first only after safety approval:
 
 ```bash
 forge test --match-test test_exploit -vvvv
@@ -656,6 +825,8 @@ forge test
 
 ## Phase 9: Strict Validation Gate
 
+First emit a `web3_result` schema block with one canonical validation status only: `REPORT_READY`, `PROVE`, `CHAIN_REQUIRED`, `NEEDS_CONTEXT`, `NEEDS_SCOPE_CONFIRMATION`, `DUPLICATE`, `NA_RISK`, or `KILL`. Do not use vague statuses like "maybe vulnerable".
+
 All seven answers must be YES before drafting a report:
 
 1. Is the target and exact affected contract/function in scope?
@@ -666,7 +837,14 @@ All seven answers must be YES before drafting a report:
 6. Is there a working PoC with assertions proving the impact?
 7. Did you check docs, README, prior audits, disclosed reports, changelog, GitHub issues/PRs, and hacktivity for duplicates or intended behavior?
 
-If any answer is NO: do not report. Continue researching, mark `CHAIN REQUIRED`, or mark `KILL`.
+If any answer is NO: do not report. Continue researching, mark `PROVE`, `CHAIN_REQUIRED`, `NEEDS_CONTEXT`, `NEEDS_SCOPE_CONFIRMATION`, `DUPLICATE`, `NA_RISK`, or `KILL`.
+
+Refutation must be recorded before any positive verdict:
+
+- Why might this be false?
+- What code path, access control, modifier, invariant, or test could block it?
+- What evidence is still missing?
+- What would make it duplicate, intended behavior, excluded, or low impact?
 
 Also run the four pre-submission gates:
 
@@ -686,10 +864,14 @@ Also run the four pre-submission gates:
 
 ### Duplicate Risk Check
 
-- Search public audits for this issue class/function.
-- Search GitHub issues and PRs for related fixes.
-- Search function name plus `vulnerability`, `bug`, `audit`, `fix`.
-- Check public hacktivity/similar titles if available.
+- Run `/web3-dupe-check` or follow `DUPLICATE_INTENDED_BEHAVIOR_CHECK.md` before report drafting.
+- Build a fingerprint from root cause, sink, impacted invariant, attacker entrypoint, impact shape, and patch shape.
+- Search local/program-provided audits for this root cause, function, invariant, and likely patch.
+- Search GitHub issues and PRs for related fixes when available and authorized.
+- Search docs/specs/NatSpec/known limitations for intended behavior or recovery assumptions.
+- Check public hacktivity/similar titles only when public/authorized evidence is available.
+- Do not treat a variant as unique unless root cause, affected asset, exploit path, or accepted impact is materially different.
+- If duplicate/intended-behavior evidence is unresolved, return `NEEDS_CONTEXT`, `DUPLICATE`, or `NA_RISK`; do not draft a report.
 
 ### Impact Accuracy And Scope Match
 
@@ -697,12 +879,15 @@ Also run the four pre-submission gates:
 - Impact does not rely on privileged role unless privilege bypass is the bug.
 - Impact matches the program's exact accepted category wording.
 - Explicit exclusions do not apply: DoS-only, griefing-only, centralization, known limitation, MEV/frontrunning, low-impact dust, test-only code, out-of-scope chain/address.
+- In `medium-bounty` or `audit-review` mode, in-scope DoS/freeze/low findings may continue only if the program or contest accepts that class and the report clearly labels severity and limitations.
 
 Use `web3_audit_validation_gate` when ready.
 
 ## Phase 10: Report Drafting
 
-Draft only after validation passes.
+Draft only after validation returns `REPORT_READY`.
+
+Block report drafting if evidence is incomplete, the PoC lacks assertions, duplicate/N/A risk is unresolved, or the selected severity mode does not support the claimed impact.
 
 Title formula:
 
@@ -734,14 +919,15 @@ Match the program's exact wording. If they require `temporary freezing > 1 hour`
 
 When user asks for one of these workflows, behave as follows:
 
-- `/web3-score`: collect scope/value data, run target score, recommend skip/narrow/full.
+- `/web3-scope`: create or review `target-scope.json` / `audit-notes/target-scope.json` with in-scope assets, accepted impacts, exclusions, target version, and testing permissions.
+- `/web3-score`: collect scope/value data, run target score, recommend skip/narrow/full; prefer existing `/web3-scope` data when available.
 - `/web3-leads`: initialize, import, list, update, validate, and summarize `audit-leads.json` using the Lead Database Engine.
 - `/web3-scan`: fingerprint repo, map contract surface, run safe build/tests/scanners, output leads only.
-- `/web3-xray`: generate pre-audit x-ray artifacts: entry-points, invariants, architecture, docs/spec assumptions, tests, and git-risk signals.
+- `/web3-xray`: generate pre-audit x-ray artifacts: architecture map, asset flow, roles, external dependencies, high-risk entry points, invariants, docs/spec assumptions, tests, git-risk signals, and a manual review queue.
 - `/web3-index`: build `x-ray/code-index.json` with contracts, storage, functions, modifiers, callgraph edges, value movement, and risk signals.
-- `/web3-hunt`: pick the top 3 crown-jewel components, run the finding playbook exploit loops, rank leads by PoC feasibility and impact, then build a PoC for the best `PROVE` lead.
-- `/web3-hypothesize`: generate exploit sentences from attacker capabilities, invariants, boundaries, and cross-file assumptions; score each lead and choose `PROVE`, `CHAIN REQUIRED`, or `KILL`.
-- `/web3-protocol`: classify target protocol type and apply the relevant protocol-specific playbook.
+- `/web3-hunt`: choose severity mode, pick crown-jewel components, generate hypotheses not findings, run refutation-first gates, rank by bounty impact/PoC feasibility, and recommend one best `PROVE` lead.
+- `/web3-hypothesize`: generate hypotheses, not findings, from attacker capabilities, invariants, boundaries, and cross-file assumptions; include refutation, kill condition, missing evidence, duplicate/N/A risk, and bounty-impact ranking.
+- `/web3-protocol`: classify target protocol type and apply the relevant protocol-specific playbook; for AMM, StableSwap, concentrated-liquidity, or Uniswap v4 hook targets, also apply `AMM_STABLESWAP_HOOK_CHECKLIST.md`.
 - `/web3-parallel-audit`: run the multi-lens audit swarm, deduplicate outputs, and validate only proof-backed leads.
 - `/web3-ingest-scanners`: normalize scanner JSON outputs into proof-needed `LEAD` rows.
 - `/web3-onchain`: use read-only RPC, Sourcify, explorers, proxy slots, owner/admin calls, balances, and expected deployment checks to verify live scope/state.
@@ -766,11 +952,13 @@ When user asks for one of these workflows, behave as follows:
 - `/web3-harness`: choose or draft adversarial test harness contracts needed to prove/kill the lead.
 - `/web3-casebook`: compare a lead to known paid-bug shapes and rejected weak variants.
 - `/web3-mine-reports`: mine public audit reports for similar protocol-type findings and convert them into hypotheses for the current target.
+- `/web3-dupe-check`: check duplicate, known-issue, intended-behavior, exclusion, and N/A risk using root-cause fingerprints and canonical statuses before validation/reporting.
+- `/web3-exec-gate`: classify command/file/RPC/PoC execution safety before running tools, tests, forks, network calls, or file writes.
 - `/web3-ai-review`: map AI read/call/sign/submit boundaries and produce exploit chains only where harmful capability exists.
 - `/web3-diff-audit`: audit recent commits/upgrades for security regressions and changed assumptions.
-- `/web3-poc`: write or generate a minimal exploit/control test for a specific `PROVE` lead, then run the narrow Foundry command and update Lead DB only after assertions pass.
-- `/web3-validate`: run the strict 7-question gate and mark `REPORT`, `CHAIN REQUIRED`, or `KILL`.
-- `/web3-report`: draft impact-first report only after validation passes.
+- `/web3-poc`: build one PoC at a time for a specific `PROVE` lead; require exploit test, control test where possible, exact assertion, kill condition, and safety gate before execution.
+- `/web3-validate`: run refutation-first gates plus the strict 7-question gate and return exactly one canonical status: `REPORT_READY`, `PROVE`, `CHAIN_REQUIRED`, `NEEDS_CONTEXT`, `NEEDS_SCOPE_CONFIRMATION`, `DUPLICATE`, `NA_RISK`, or `KILL`.
+- `/web3-report`: draft a copy-paste bounty report only after evidence gate passes; include limitations and severity rationale; block the report if evidence is incomplete.
 
 ## Final Discipline
 

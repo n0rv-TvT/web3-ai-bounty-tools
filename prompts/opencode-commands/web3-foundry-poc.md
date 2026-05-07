@@ -34,12 +34,28 @@ python3 <skill-dir>/scripts/foundry_poc_generator.py \
   --out test/Exploit.t.sol
 ```
 
-Return:
+Before recommending any execution command, classify it with `/web3-exec-gate` or `execution_safety_gate.py`.
 
-1. Generated Solidity path and metadata path.
-2. Selected PoC pattern and harnesses.
-3. Exact narrow `forge test` command.
-4. TODOs that must be filled before PoC can count as proof.
-5. Lead DB `add-poc` command for `PLANNED` now and `PASS` only after assertions pass.
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-foundry-poc
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NA_RISK|KILL
+  target: "<program/repo/contract>"
+  summary: "<one sentence>"
+  generated_solidity_path: "<path or null>"
+  metadata_path: "<path or null>"
+  selected_poc_pattern: "<pattern>"
+  harnesses: []
+  execution_command: "<narrow forge command or null>"
+  execution_safety_classification: SAFE_READ_ONLY|SAFE_LOCAL_TEST|SAFE_LOCAL_FORK_READONLY|NEEDS_USER_RPC_CONFIRMATION|NEEDS_USER_NETWORK_CONFIRMATION|REVIEW_REQUIRED|BLOCKED_BROADCAST|BLOCKED_SECRET_REQUIRED|BLOCKED_PRODUCTION_ACTION|BLOCKED_DESTRUCTIVE_COMMAND|BLOCKED_DEPENDENCY_INSTALL|BLOCKED_ENV_ACCESS|NOT_RUN
+  todos_before_proof: []
+  lead_db_command: "<add-poc command>"
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```
 
 Do not modify production contracts. Do not mark PoC `PASS` from a scaffold alone. Generated exploit tests intentionally fail until completed.

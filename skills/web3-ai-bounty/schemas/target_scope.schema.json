@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/target_scope.schema.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "status", "severity_mode", "target", "accepted_impacts", "excluded_impacts", "testing_permissions", "open_questions", "scope_blockers", "next_action"],
+  "properties": {
+    "schema_version": {"const": "web3-target-scope/v1"},
+    "status": {
+      "type": "string",
+      "enum": ["PROVE", "NEEDS_CONTEXT", "NEEDS_SCOPE_CONFIRMATION", "NA_RISK", "KILL", "AUDIT_NOTE"]
+    },
+    "severity_mode": {
+      "type": "string",
+      "enum": ["critical-bounty", "medium-bounty", "audit-review", "learning"]
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["program", "repo", "commit_or_tag", "protocol_types", "source_of_truth", "scope_confidence"],
+      "properties": {
+        "program": {"type": "string"},
+        "repo": {"type": "string"},
+        "commit_or_tag": {"type": "string"},
+        "protocol_types": {"type": "array", "items": {"type": "string"}},
+        "source_of_truth": {"type": "array", "items": {"type": "string"}},
+        "scope_confidence": {"type": "string", "enum": ["confirmed", "partial", "unknown"]}
+      }
+    },
+    "chains": {"type": "array", "items": {"type": "object"}},
+    "contracts": {"type": "array", "items": {"type": "object"}},
+    "assets": {"type": "object", "additionalProperties": true},
+    "accepted_impacts": {"type": "array", "items": {"type": "object"}},
+    "excluded_impacts": {"type": "array", "items": {"type": "object"}},
+    "testing_permissions": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["local_tests_allowed", "fork_tests_allowed", "read_only_rpc_allowed", "live_transactions_allowed", "broadcast_allowed"],
+      "properties": {
+        "local_tests_allowed": {"type": "boolean"},
+        "fork_tests_allowed": {"$ref": "#/$defs/bool_or_unknown"},
+        "read_only_rpc_allowed": {"$ref": "#/$defs/bool_or_unknown"},
+        "live_transactions_allowed": {"$ref": "#/$defs/bool_or_unknown"},
+        "broadcast_allowed": {"type": "boolean"},
+        "mainnet_testing_notes": {"type": "string"}
+      }
+    },
+    "privileged_roles_and_recovery": {"type": "array", "items": {"type": "object"}},
+    "crown_jewels": {"type": "array", "items": {}},
+    "known_limitations": {"type": "array", "items": {}},
+    "prior_audits_or_reports": {"type": "array", "items": {}},
+    "open_questions": {"type": "array", "items": {}},
+    "scope_blockers": {"type": "array", "items": {}},
+    "next_action": {"type": "string"}
+  },
+  "$defs": {
+    "bool_or_unknown": {
+      "oneOf": [
+        {"type": "boolean"},
+        {"type": "string", "enum": ["unknown"]}
+      ]
+    }
+  }
+}

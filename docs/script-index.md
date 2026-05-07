@@ -2,15 +2,41 @@
 
 Reusable scripts live under `skills/web3-ai-bounty/scripts/`.
 
+Repo-level operational scripts live under `scripts/`.
+
+## Repo-level scripts
+
+| Script | Purpose |
+|---|---|
+| `scripts/install-opencode-assets.sh` | Dry-run, install, or verify repo skills/prompts/agents against the active Opencode config |
+
 ## Safety and gate scripts
 
 | Script | Purpose |
 |---|---|
 | `safety_guard.py` | Safety self-tests and guard checks |
+| `execution_safety_gate.py` | Classify command/file/RPC/PoC execution safety with canonical safety statuses |
 | `poc_execution_gate.py` | Gate local PoC execution and block unsafe runs |
 | `readiness_policy.py` | Enforce report-readiness and post-hoc evidence policy |
 | `no_overfit_guard.py` | Guard against benchmark leakage and overfit claims |
 | `pipeline_enforcer.py` | Enforce final evidence/report pipeline status |
+| `schema_validator.py` | Validate Web3 workflow JSON artifacts against schemas |
+
+Example schema validation:
+
+```bash
+python3 skills/web3-ai-bounty/scripts/schema_validator.py web3_result result.json
+python3 skills/web3-ai-bounty/scripts/schema_validator.py target_scope target-scope.json
+python3 skills/web3-ai-bounty/scripts/schema_validator.py dupe_check dupe-check.json
+python3 skills/web3-ai-bounty/scripts/schema_validator.py execution_safety execution-safety.json
+```
+
+Example execution safety classification:
+
+```bash
+python3 skills/web3-ai-bounty/scripts/execution_safety_gate.py --command "forge test --match-test test_exploit -vvvv"
+python3 skills/web3-ai-bounty/scripts/execution_safety_gate.py --command "forge test --fork-url \$RPC_URL"
+```
 
 ## Evidence and report scripts
 

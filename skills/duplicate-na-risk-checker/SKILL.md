@@ -26,12 +26,15 @@ Identify duplicate, known-risk, intended-behavior, and likely N/A reasons before
 
 ## Output format
 
-```text
-Risk decision: CLEAR | DUPLICATE | KNOWN-RISK | INTENDED | N/A-RISK
-Evidence:
-Likely rejection reason:
-What would make it stronger:
-Do-not-revisit reason:
+```yaml
+duplicate_risk_result:
+  schema_version: duplicate-na-risk/v1
+  status: PROVE|DUPLICATE|NA_RISK|KILL|NEEDS_CONTEXT
+  review_decision: CLEAR|DUPLICATE|KNOWN_RISK|INTENDED_BEHAVIOR|EXCLUDED|NA_RISK|NEEDS_CONTEXT
+  evidence: []
+  likely_rejection_reason: "<reason or none>"
+  what_would_make_it_stronger: "<missing proof or scope confirmation>"
+  do_not_revisit_reason: "<if blocked>"
 ```
 
 ## Safety rules

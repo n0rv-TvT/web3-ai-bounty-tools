@@ -39,4 +39,26 @@ Before ranking, run the refutation-first gates from `PARALLEL_AUDIT_ORCHESTRATOR
 
 Then run the 7-question bounty gate only for survivors.
 
-Return ranked `PROVE`, `CHAIN REQUIRED`, and `KILL` items. Do not draft a report.
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-parallel-audit
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|DUPLICATE|NA_RISK|KILL|AUDIT_NOTE|LOW_INFO
+  target: "<program/repo/contract>"
+  summary: "<one sentence>"
+  ranked_items:
+    - id: "<lead id>"
+      lens: vector-scan|math-precision|access-control|economic-security|execution-trace|invariants|periphery|first-principles
+      status: PROVE|CHAIN_REQUIRED|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|DUPLICATE|NA_RISK|KILL|AUDIT_NOTE|LOW_INFO
+      source_pointer: "<file:contract:function>"
+      impact_claim: "<accepted impact or why weak>"
+      evidence_missing: []
+      next_action: "<exact command or stop reason>"
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```
+
+Do not draft a report.

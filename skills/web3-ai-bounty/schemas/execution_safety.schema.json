@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/execution_safety.schema.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["execution_safety"],
+  "properties": {
+    "execution_safety": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema_version", "operation", "operation_type", "classification", "allowed_to_execute", "requires_user_confirmation", "reasons", "blocked_capabilities", "next_action"],
+      "properties": {
+        "schema_version": {"const": "web3-execution-safety/v1"},
+        "operation": {"type": "string"},
+        "operation_type": {"type": "string", "enum": ["command", "file_read", "file_write", "network", "rpc", "poc_execution", "unknown"]},
+        "classification": {"$ref": "#/$defs/classification"},
+        "allowed_to_execute": {"type": "boolean"},
+        "requires_user_confirmation": {"type": "boolean"},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "blocked_capabilities": {"type": "array", "items": {"type": "string"}},
+        "safe_alternative": {"type": ["string", "null"]},
+        "next_action": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "classification": {
+      "type": "string",
+      "enum": [
+        "SAFE_READ_ONLY",
+        "SAFE_LOCAL_TEST",
+        "SAFE_LOCAL_FORK_READONLY",
+        "NEEDS_USER_RPC_CONFIRMATION",
+        "NEEDS_USER_NETWORK_CONFIRMATION",
+        "REVIEW_REQUIRED",
+        "BLOCKED_BROADCAST",
+        "BLOCKED_SECRET_REQUIRED",
+        "BLOCKED_PRODUCTION_ACTION",
+        "BLOCKED_DESTRUCTIVE_COMMAND",
+        "BLOCKED_DEPENDENCY_INSTALL",
+        "BLOCKED_ENV_ACCESS"
+      ]
+    }
+  }
+}

@@ -72,4 +72,4 @@ For bounty findings, connect source to deployed reality:
 source lead -> in-scope deployed address -> proxy implementation -> owner/roles -> live balances/TVL -> oracle state -> fork PoC
 ```
 
-If the vulnerable code is not deployed, not in scope, or not reachable in live state, mark the lead `KILL` or `CHAIN REQUIRED`.
+If the vulnerable code is not deployed, not in scope, or not reachable in live state, mark the lead `KILL` or `CHAIN_REQUIRED`.

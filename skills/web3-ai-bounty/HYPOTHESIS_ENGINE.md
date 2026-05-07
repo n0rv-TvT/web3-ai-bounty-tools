@@ -30,7 +30,7 @@ Because signed withdrawals omit chainId and verifyingContract, attacker can reus
 Because finalizeMessage() marks messages consumed after token transfer, attacker can reenter through a malicious receiver and finalize the same message twice, causing double release from the bridge escrow.
 ```
 
-If you cannot write this sentence with a specific accepted impact, mark `KILL` or `CHAIN REQUIRED`.
+If you cannot write this sentence with a specific accepted impact, mark `KILL` or `CHAIN_REQUIRED`.
 
 ## Capability Matrix
 
@@ -138,7 +138,7 @@ Decision:
 
 - `13+`: `PROVE` now.
 - `9-12`: `PROVE` if top lead; otherwise keep as lead.
-- `5-8`: `CHAIN REQUIRED` or narrow check only.
+- `5-8`: `CHAIN_REQUIRED` or narrow check only.
 - `<5`: `KILL`.
 
 ## 15-Minute Lead Triage Loop
@@ -151,7 +151,7 @@ For each lead, timebox proof planning:
 4. Name minimal test setup.
 5. Name final assertion.
 
-If this cannot be done in 15 minutes, mark `CHAIN REQUIRED` or `KILL` and move on.
+If this cannot be done in 15 minutes, mark `CHAIN_REQUIRED` or `KILL` and move on.
 
 ## Counterexample-Driven Auditing
 
@@ -177,7 +177,7 @@ Use this exact format when presenting leads:
 
 ```text
 Lead L-01: <short title>
-State: PROVE | CHAIN REQUIRED | KILL
+State: PROVE | CHAIN_REQUIRED | NEEDS_CONTEXT | NEEDS_SCOPE_CONFIRMATION | NA_RISK | KILL
 Exploit sentence: Because ...
 Impacted invariant:
 Attacker capability:

@@ -12,8 +12,8 @@ Target / protocol type:
 Lead ID:
 Pattern:
 Files/functions:
-Initial status: LEAD | PROVE | CHAIN REQUIRED
-Final status: REPORT | KILL | CHAIN REQUIRED
+Initial status: LEAD | PROVE | CHAIN_REQUIRED | NEEDS_CONTEXT | NEEDS_SCOPE_CONFIRMATION
+Final status: REPORT_READY | KILL | CHAIN_REQUIRED | DUPLICATE | NA_RISK
 
 Exploit sentence:
 

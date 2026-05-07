@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/web3_result.schema.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["web3_result"],
+  "properties": {
+    "web3_result": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema_version", "command", "severity_mode", "status", "target", "summary", "next_action"],
+      "properties": {
+        "schema_version": {"const": "web3-ai-bounty/v1"},
+        "command": {
+          "type": "string",
+          "enum": [
+            "web3-access",
+            "web3-ai-review",
+            "web3-assumptions",
+            "web3-bounty",
+            "web3-casebook",
+            "web3-diff-audit",
+            "web3-dupe-check",
+            "web3-economics",
+            "web3-eval",
+            "web3-exec-gate",
+            "web3-execution",
+            "web3-first-principles",
+            "web3-foundry-poc",
+            "web3-harness",
+            "web3-hunt",
+            "web3-hypothesize",
+            "web3-index",
+            "web3-ingest-scanners",
+            "web3-invariant",
+            "web3-language",
+            "web3-leads",
+            "web3-math",
+            "web3-mine-reports",
+            "web3-onchain",
+            "web3-parallel-audit",
+            "web3-periphery",
+            "web3-poc",
+            "web3-poc-patterns",
+            "web3-protocol",
+            "web3-report",
+            "web3-rust",
+            "web3-scan",
+            "web3-scope",
+            "web3-score",
+            "web3-siblings",
+            "web3-standards",
+            "web3-validate",
+            "web3-vectors",
+            "web3-vuln-module",
+            "web3-vyper",
+            "web3-xray",
+            "other"
+          ]
+        },
+        "severity_mode": {"$ref": "#/$defs/severity_mode"},
+        "status": {"$ref": "#/$defs/canonical_status"},
+        "target": {"type": "string"},
+        "summary": {"type": "string"},
+        "evidence_missing": {"type": "array", "items": {}},
+        "next_action": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "severity_mode": {
+      "type": "string",
+      "enum": ["critical-bounty", "medium-bounty", "audit-review", "learning"]
+    },
+    "canonical_status": {
+      "type": "string",
+      "enum": [
+        "INTAKE",
+        "LEAD",
+        "PROVE",
+        "CHAIN_REQUIRED",
+        "NEEDS_CONTEXT",
+        "NEEDS_SCOPE_CONFIRMATION",
+        "DUPLICATE",
+        "NA_RISK",
+        "KILL",
+        "REPORT_READY",
+        "REPORT_BLOCKED",
+        "AUDIT_NOTE",
+        "LOW_INFO"
+      ]
+    }
+  }
+}

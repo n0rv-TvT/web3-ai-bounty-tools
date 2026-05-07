@@ -108,7 +108,7 @@ Current target match:
 Files/functions to inspect:
 Exploit sentence:
 Expected impact:
-Status: LEAD | PROVE | CHAIN REQUIRED | KILL
+Status: LEAD | PROVE | CHAIN_REQUIRED | NEEDS_CONTEXT | NEEDS_SCOPE_CONFIRMATION | NA_RISK | KILL
 Next check:
 ```
 

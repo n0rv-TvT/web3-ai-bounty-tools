@@ -179,4 +179,4 @@ Map language-specific constructs back to the same bounty impact categories:
 stolen funds, frozen funds, bad debt, unauthorized privileged action, account takeover, sensitive data exposure, unsafe signing/tool execution
 ```
 
-No concrete impact means `KILL` or `CHAIN REQUIRED` regardless of language.
+No concrete impact means `KILL` or `CHAIN_REQUIRED` regardless of language.

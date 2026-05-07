@@ -5,7 +5,7 @@ Purpose: turn contract surface maps into exploit hypotheses and then into passin
 Core rule: every loop must end with one of these outcomes:
 
 - `PROVE`: exact exploit test is clear; write the PoC.
-- `CHAIN REQUIRED`: impact is weak alone; needs another bug or condition.
+- `CHAIN_REQUIRED`: impact is weak alone; needs another bug or condition.
 - `KILL`: unreachable, intended behavior, excluded, duplicate, admin-only, scanner-only, or no concrete impact.
 
 ## /web3-hunt Operating Loop
@@ -44,7 +44,7 @@ Invariant broken:
 Assertion that proves impact:
 ```
 
-If this cannot be written concretely, mark `KILL` or `CHAIN REQUIRED`.
+If this cannot be written concretely, mark `KILL` or `CHAIN_REQUIRED`.
 
 ## Loop 1: Sibling Function Differential
 

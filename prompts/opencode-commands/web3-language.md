@@ -25,3 +25,23 @@ Return:
 3. Bug classes to prioritize.
 4. PoC/test framework recommendation.
 5. Fast-kill conditions.
+
+Return this parseable block first:
+
+```yaml
+web3_result:
+  schema_version: web3-ai-bounty/v1
+  command: web3-language
+  severity_mode: critical-bounty|medium-bounty|audit-review|learning
+  status: PROVE|LEAD|NEEDS_CONTEXT|NEEDS_SCOPE_CONFIRMATION|KILL|AUDIT_NOTE|LOW_INFO
+  target: "<program/repo>"
+  summary: "<one sentence>"
+  ecosystem: solidity-evm|vyper-evm|solana-anchor|cosmwasm|ink|stylus|unknown
+  tool_plan: []
+  high_risk_constructs: []
+  priority_bug_classes: []
+  poc_framework: "<Foundry/Hardhat/Ape/cargo/etc>"
+  fast_kill_conditions: []
+  evidence_missing: []
+  next_action: "<exact command or stop reason>"
+```
