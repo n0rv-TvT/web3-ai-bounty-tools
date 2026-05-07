@@ -1,8 +1,23 @@
 # Parallel Audit Orchestrator
 
-Purpose: run the same code through different attacker lenses, then deduplicate and validate. This follows the useful pattern of multi-agent Solidity audit skills while keeping this hunter's stricter bounty gate.
+Purpose: run the same code through different attacker lenses, then deduplicate and validate. This follows the useful pattern of multi-agent Solidity audit skills while keeping this hunter's stricter bounty gate and PoC-first discipline.
 
 Use for `/web3-parallel-audit` after scope and x-ray/surface mapping.
+
+## Mode Selection
+
+Choose the smallest scope that can still prove impact.
+
+- **Targeted mode**: 2-5 hot contracts or files the user specifies. Prefer this when debugging a lead or recent diff.
+- **Subsystem mode**: one protocol area such as vault, oracle, router, bridge, staking, rewards, governance, or AI-agent tooling.
+- **Full-repo mode**: only after x-ray/surface mapping, because broad context lowers per-function depth.
+
+Default excludes:
+
+- interfaces unless interface mismatch is the lead
+- vendored libraries unless modified
+- mocks and tests unless test/deploy logic is in scope
+- generated files, build artifacts, caches
 
 ## Source Bundle
 
@@ -26,6 +41,14 @@ Exclude by default:
 - vendored libraries unless modified
 - generated files
 
+Bundle discipline:
+
+- Create one shared source bundle when the agent environment supports local temp files.
+- Print line counts for the source bundle and each lens bundle.
+- Do not paste huge source bundles into every prompt when a file path can be referenced.
+- Include a peripheral manifest of related files that lenses may read on demand.
+- If the bundle is too large, split by subsystem and run the same lens sequence per subsystem.
+
 ## Audit Lenses
 
 Run these lenses in parallel when tooling supports subagents. If not, run them sequentially as mental passes.
@@ -40,6 +63,8 @@ Focus:
 - missing guard or partial guard
 - reachable construct
 - repeat pattern across sibling contracts
+
+Required behavior: when one pattern is confirmed in one contract, search siblings for the same pattern before final output.
 
 ### 2. Math Precision Lens
 
@@ -129,6 +154,19 @@ Focus:
 - construct sequence where assumption is false
 - monetize corrupted state
 
+## Shared Lens Rules
+
+Each lens must obey these rules:
+
+- Treat scanner output and model ideas as leads only.
+- Check both `functionName` and `_functionName` naming variants.
+- Weaponize a confirmed pattern across sibling functions/contracts.
+- Escalate a bug to its worst realistic impact, but do not invent chains.
+- One vulnerability per item. Same root cause = one item. Different fixes or assets = separate items.
+- Admin-only functions doing admin things are not findings unless the bug is privilege bypass or unsafe delegated authority.
+- No proof means `LEAD`, not `FINDING`.
+- If a concrete guard blocks the exact claimed step, reject or demote immediately.
+
 ## Required Output Schema
 
 Every lens must output structured blocks only.
@@ -149,6 +187,15 @@ next_check: <exact check or PoC step>
 ```
 
 No proof means LEAD, not FINDING.
+
+Optional but useful fields:
+
+```text
+preconditions: <minimal state required>
+normal_attacker: yes/no
+impact_asset: <funds/state/data/signing/tool>
+kill_condition: <exact source/test condition that would kill this item>
+```
 
 ## Deduplication
 
@@ -174,9 +221,45 @@ AND both are independently reachable
 
 Most audits have 0-2 valid chains. Do not invent chains to make weak leads look strong.
 
-## Gate Evaluation
+## Refutation-First Gate Evaluation
 
-Run each deduplicated item through the strict 7-question gate once.
+Before the 7-question bounty gate, run each deduplicated item through four refutation-first gates. Later gates are not evaluated for failed items.
+
+### Gate 1 — Refutation
+
+Construct the strongest argument that the finding is wrong.
+
+- Quote the guard/check/constraint that blocks the claimed step.
+- If a concrete source-level refutation blocks the path, mark `KILL` or demote to `LEAD` if a code smell remains.
+- Speculative refutation is not enough to kill.
+
+### Gate 2 — Reachability
+
+Prove the vulnerable state is achievable in the reviewed code/deployment model.
+
+- Structurally impossible → `KILL`.
+- Requires privileged action outside normal operation → `CHAIN REQUIRED` or `N/A-RISK`.
+- Achievable through normal usage/common token behavior → continue.
+
+### Gate 3 — Trigger
+
+Prove a normal attacker or realistic actor can execute the attack.
+
+- Only trusted role can trigger → demote unless privilege bypass is the bug.
+- Attack cost exceeds extraction and no accepted freeze/privilege impact → `N/A-RISK` or `KILL`.
+- Normal attacker can trigger → continue.
+
+### Gate 4 — Impact
+
+Prove material harm to an identifiable victim/protocol/security boundary.
+
+- Self-harm only → `KILL`.
+- Dust-only/no compounding/no accepted severity category → `N/A-RISK`.
+- Concrete stolen funds, frozen funds, bad debt, unauthorized privileged action, sensitive data leak, account takeover, or unsafe signing/tool execution → continue.
+
+## Bounty Gate Evaluation
+
+Run each item that survives refutation through the strict 7-question gate once.
 
 Important rules:
 
@@ -184,6 +267,25 @@ Important rules:
 - Concrete source-level refutation wins.
 - No deployer-intent reasoning; evaluate what current code allows, then check docs/scope for intended behavior.
 - `UNCERTAIN` is not report-ready. It can be `LEAD` or `CHAIN REQUIRED`, not `REPORT`.
+- Evaluate constructor → initializers → setters → core value-moving functions → emergency paths → callbacks in a fixed pass. Do not repeatedly revisit until a preferred answer appears.
+
+## Confidence And Promotion
+
+Use confidence only for prioritization, not report-readiness.
+
+Start at 100 for source-traced, PoC-plausible issues. Deduct:
+
+- partial attack path: -20
+- bounded non-compounding impact: -15
+- specific but achievable state: -10
+- missing duplicate/intended-behavior check: -10
+- no control test where practical: -5
+
+Promotion rules:
+
+- `LEAD` can become `PROVE` when the complete exploit chain is source-traced or two independent lenses converge with no concrete refutation.
+- Multi-lens agreement never overrides a concrete source-level block.
+- `REPORT` still requires the PoC/evidence/report gates, regardless of confidence.
 
 ## Final Ranking
 

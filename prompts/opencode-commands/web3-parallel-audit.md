@@ -20,6 +20,23 @@ Run the target through these audit lenses:
 7. Periphery.
 8. First principles.
 
+Use the smallest useful mode:
+
+- targeted files if `$ARGUMENTS` names files/contracts
+- subsystem mode if a protocol area is implied
+- full repo only after x-ray/surface mapping
+
+For each lens output, require structured `FINDING` or `LEAD` blocks. No proof means `LEAD`, not `FINDING`.
+
 Deduplicate by `Contract | function | bug-class`, merge only true duplicates, and validate proof-backed leads.
+
+Before ranking, run the refutation-first gates from `PARALLEL_AUDIT_ORCHESTRATOR.md`:
+
+1. Refutation.
+2. Reachability.
+3. Trigger.
+4. Impact.
+
+Then run the 7-question bounty gate only for survivors.
 
 Return ranked `PROVE`, `CHAIN REQUIRED`, and `KILL` items. Do not draft a report.
