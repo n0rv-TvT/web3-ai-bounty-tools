@@ -1,3 +1,8 @@
+---
+name: poc-first-validator
+description: Validate Web3/AI bug bounty leads through a PoC-first evidence ladder and decide prove, kill, duplicate, N/A-risk, or report-ready.
+---
+
 # poc-first-validator
 
 ## Description

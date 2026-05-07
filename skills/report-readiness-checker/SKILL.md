@@ -1,3 +1,8 @@
+---
+name: report-readiness-checker
+description: Apply the 7-question bug bounty report-readiness gate before submission.
+---
+
 # report-readiness-checker
 
 ## Description

@@ -1,3 +1,8 @@
+---
+name: duplicate-na-risk-checker
+description: Identify duplicate, known-risk, intended-behavior, exclusion, and likely N/A reasons before submission.
+---
+
 # duplicate-na-risk-checker
 
 ## Description

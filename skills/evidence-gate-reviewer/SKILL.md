@@ -1,3 +1,8 @@
+---
+name: evidence-gate-reviewer
+description: Review whether a finding has complete, reproducible, sanitized evidence for bug bounty report drafting.
+---
+
 # evidence-gate-reviewer
 
 ## Description

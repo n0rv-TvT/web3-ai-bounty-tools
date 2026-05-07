@@ -1,3 +1,8 @@
+---
+name: web3-bounty-xray
+description: Produce a concise attack-surface x-ray for authorized Web3 targets before hypothesis generation and PoC work.
+---
+
 # web3-bounty-xray
 
 ## Description

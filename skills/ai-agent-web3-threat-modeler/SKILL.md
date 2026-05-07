@@ -1,3 +1,8 @@
+---
+name: ai-agent-web3-threat-modeler
+description: Threat-model AI-enabled Web3 systems where untrusted content may reach signing, transaction, tool, memory, or data boundaries.
+---
+
 # ai-agent-web3-threat-modeler
 
 ## Description

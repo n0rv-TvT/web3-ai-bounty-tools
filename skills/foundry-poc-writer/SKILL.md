@@ -1,3 +1,8 @@
+---
+name: foundry-poc-writer
+description: Turn a validated Web3 exploit hypothesis into a minimal Foundry exploit test and control test plan.
+---
+
 # foundry-poc-writer
 
 ## Description
